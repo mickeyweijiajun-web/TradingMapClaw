@@ -101,7 +101,7 @@ I help solo operators and serious investors build their own low-cost, production
 
 - **Book a call / audit:** see the landing page at [tradingmapclaw.com](https://tradingmapclaw.com)
 - **Writing:** [Substack @tradingmapclaw](https://tradingmapclaw.substack.com) · [Medium @tradingmapclaw](https://medium.com/@tradingmapclaw)
-- **LinkedIn:** [Mickey Wei](https://www.linkedin.com/in/mickey-wei-5b95aa95/)
+- **Threads:** [@tradingmapclaw](https://www.threads.net/@tradingmapclaw) · **LinkedIn:** [Mickey Wei](https://www.linkedin.com/in/mickey-wei-5b95aa95/)
 - **Telegram:** [@tradingmapclaw](https://t.me/tradingmapclaw) · **WhatsApp/Phone:** [+44 7857 086337](https://wa.me/447857086337)
 - **Email:** [mickeyweijiajun@gmail.com](mailto:mickeyweijiajun@gmail.com)
 

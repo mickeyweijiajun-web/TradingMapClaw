@@ -4,7 +4,7 @@
 
 ---
 
-A man who lost 95% of his right arm's function before he was twenty. A man whose colon was removed and whose abdomen now carries a permanent opening. A man who worked inside Wells Fargo, Deutsche Bank, UBS, and JPMorgan — typing with one hand. A man who, in 2026, built an automated investment research system — 468 Python scripts, 115 scheduled jobs, dual-engine AI council — by himself, on a single Mac mini, in two months. His name is Mickey Wei. This is not a story about overcoming adversity. It is a story about a man who refused to accept the dimensions of the room he was given.
+A man who lost 95% of his right arm's function before he was twenty. A man whose colon was removed and whose abdomen now carries a permanent opening. A man who worked inside Wells Fargo, Deutsche Bank, UBS, JPMorgan, and eToro — typing with one hand. A man who, in 2026, built an automated investment research system — 468 Python scripts, 115 scheduled jobs, dual-engine AI council — by himself, on a single Mac mini, in two months. His name is Mickey Wei. This is not a story about overcoming adversity. It is a story about a man who refused to accept the dimensions of the room he was given.
 
 ---
 
@@ -38,7 +38,7 @@ The turning point arrived in an interview for a multinational corporation's disa
 
 He worked in back office operations — the infrastructure layer of global finance. Not the trading floor. Not the client meetings. The machinery beneath: trade lifecycle processing, settlement, reconciliation. The work that ensures that when a trade is made, the securities move, the cash moves, the books balance, and the system does not break.
 
-His career spanned four institutions, each a pillar of the global financial system: Wells Fargo, Deutsche Bank, UBS, and JPMorgan. These are not small companies. They are the institutions that clear and settle the transactions that the world's economy runs on. The fact that he worked there is not a footnote. It is a fact that stands on its own.
+His career spanned five institutions, each a force in the global financial system: Wells Fargo, Deutsche Bank, UBS, JPMorgan, and eToro. Four are the pillars that clear and settle the transactions the world's economy runs on; the fifth, eToro, is the fintech platform that put social, algorithmic trading in the hands of ordinary people. These are not small companies. The fact that he worked there is not a footnote. It is a fact that stands on its own.
 
 He did this work with one functional hand. He did not ask for reduced standards. He did not receive them.
 
