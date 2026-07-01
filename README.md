@@ -3,7 +3,13 @@
 > **One Hand. One Bag. One System.**
 > A production-grade, dual-engine AI research system for US equities and crypto — built and run solo on a single Mac mini for **~$55/month**.
 
-[![Status](https://img.shields.io/badge/status-FROZEN%20v1.1.1-2a6b73)](CHANGELOG.md)
+> ### 🖐️ Read this first → [**STORY.md**](STORY.md)
+>
+> Eight surgeries. One working hand (right-arm brachial plexus avulsion, ~95% function lost). A permanent ostomy. Zero prior coding background. In **two months**, I taught myself to build everything in this repository.
+>
+> This project is not a demo of what AI can do. It is proof of what a person can do when they refuse to accept the dimensions of the room they were given. **Not pity. Visibility.** — [full story](STORY.md) · [my 2019 essay on disability & employment](https://www.linkedin.com/in/mickey-wei-5b95aa95/recent-activity/articles/)
+
+[![Status](https://img.shields.io/badge/status-FROZEN%20v1.1.4-2a6b73)](CHANGELOG.md)
 [![Scripts](https://img.shields.io/badge/scripts-468%20compile-5ba8b0)](ARCHITECTURE.md)
 [![Cron](https://img.shields.io/badge/cron%20jobs-115-5ba8b0)](ARCHITECTURE.md)
 [![Coverage](https://img.shields.io/badge/tickers-82-5ba8b0)](#coverage)
@@ -113,9 +119,13 @@ If the open-source work or writing helped you, a tip keeps the $55/month system 
 
 ## The story
 
-I didn't set out to build a $55/month AI research system. I was forced to. One functional hand (right-arm brachial plexus avulsion), one carry-on bag, a permanent ileostomy, no office, no team. Ex back-office at Wells Fargo, Deutsche Bank, UBS, JPMorgan, eToro. SJTU accounting.
+Before I was twenty, a hit-and-run collision tore the nerves in my right arm — a brachial plexus avulsion that cost me ~95% of the function in my right hand. Three surgeries. I relearned everything left-handed and sat the national college entrance exam one-handed. Years later, inside the back offices of **Wells Fargo, Deutsche Bank, UBS, and JPMorgan**, I did the work with one hand and asked for no lowered standard. Then ulcerative colitis took my colon — five more surgeries across eight years, and a **permanent ostomy** I manage every day. Eight surgeries total.
 
-The constraints removed every shortcut and left only what actually worked.
+In May 2026, with **no prior coding background**, I started building. AI became my engineering partner — not a crutch, but a collaborator that types at the speed of my thoughts, because my left hand alone couldn't keep up. Two months later: this system. It runs at 4 AM while I sleep, and it does not know or care that it was built by a man with one hand and a stoma bag. That is the point.
+
+**I didn't overcome anything. I refused to be overcome.** → [Read the full story in STORY.md](STORY.md)
+
+If you're living with brachial plexus injury, ulcerative colitis, IBD, Crohn's, or a permanent ostomy: you are not invisible. **Not pity. Visibility.**
 
 ---
 
@@ -125,4 +135,4 @@ The constraints removed every shortcut and left only what actually worked.
 
 ---
 
-*README v1.1.1 · © 2026 Mickey Wei · [tradingmapclaw.com](https://tradingmapclaw.com)*
+*README v1.1.4 · © 2026 Mickey Wei · [tradingmapclaw.com](https://tradingmapclaw.com)*
