@@ -1,6 +1,6 @@
 # Architecture
 
-> TradingMapClaw (TMC) v1.1.1 — FROZEN
+> TradingMapClaw (TMC) v1.1.4 — FROZEN
 > This document describes the system's design principles, data flow, component responsibilities, key decisions, and known limitations.
 
 ---
@@ -139,7 +139,7 @@ The cascade GLM-5.2 → GPT-5.5 → DeepSeek-V4-Pro → Qwen3 14B serves two pur
 
 ### 4.4 Why an Engineering Constitution
 
-The system has 232 Python scripts across 425 compilation units, many tightly coupled. Uncontrolled refactoring is an existential risk. The 10-rule constitution (derived from Karpathy's CLAUDE.md) enforces:
+The system has 468 Python scripts, many tightly coupled. Uncontrolled refactoring is an existential risk. The 10-rule constitution (derived from Karpathy's CLAUDE.md) enforces:
 - Read before write (understand existing patterns before modifying).
 - Surgical changes (smallest possible diff).
 - No new dependencies without justification.
@@ -180,10 +180,10 @@ TMC operates within a strict security perimeter:
 - **Local storage:** All data files, configuration, and credentials are stored locally on the Mac mini. No cloud storage.
 - **API key isolation:** API keys and tokens are stored in environment variables and local config files. They are never committed to version control.
 - **Proxy boundary:** All outbound traffic flows through a single proxy (127.0.0.1:10808). No direct internet access from collection scripts.
-- **Codex audit:** 230 files scanned by Codex code review. 0 high-severity bugs found.
+- **Codex audit:** Hermes+Codex cross-audit across all scripts. 0 high-severity bugs found.
 - **Engineering Constitution:** 10 rules constrain all AI-assisted code modifications, preventing unreviewed changes.
 
 ---
 
-*Architecture document v1.1.1 — Generated 2026-06-30.*
+*Architecture document v1.1.4 — Generated 2026-07-01.*
 *All architectural descriptions verified against actual system files.*

@@ -28,13 +28,13 @@ It has **no broker connection and cannot execute trades**. It is a research tool
 
 | Metric | Value |
 |--------|-------|
-| Python scripts | **468** (425/425 compile) |
+| Python scripts | **468** (468/468 compile) |
 | Cron jobs | **115** (106 enabled) |
 | Coverage tickers | **82** across 5 groups |
 | Data sources | **12+** free / low-cost |
 | Report types | **13** (T1/T2/T3/T11/T15/T16/T17/T18/T19/T25/T26/R1–R3/Visual) |
 | Monthly cost | **~$55 USD** hard cap |
-| High-severity bugs | **0** (230 files, Codex-reviewed) |
+| High-severity bugs | **0** (Hermes+Codex cross-audit) |
 | Runtime | macOS 26.5.1 · single Mac mini (Apple Silicon) |
 
 ---
@@ -82,7 +82,7 @@ This is a survival protocol for a solo-developed system, not a style guide. See 
 
 ## Status: FROZEN
 
-TMC is **frozen at v1.1.1**. It is in daily operation and maintenance only. **No new features are accepted.** Bug reports, documentation fixes, and data-source suggestions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+TMC is **frozen at v1.1.4** (2026-07-01, Hermes+Codex cross-audit passed). It is in daily operation and maintenance only. **No new features are accepted.** Bug reports, documentation fixes, and data-source suggestions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Version history: [CHANGELOG.md](CHANGELOG.md) · Security posture: [SECURITY.md](SECURITY.md)
 

@@ -26,6 +26,6 @@ assignees: mickeyweijiajun-web
 ```
 
 ## Notes
-<!-- The system is FROZEN at v1.1.1. Only bug fixes, doc improvements, and
+<!-- The system is FROZEN at v1.1.4. Only bug fixes, doc improvements, and
      data-source suggestions are accepted. Feature requests will be closed.
      See CONTRIBUTING.md. -->

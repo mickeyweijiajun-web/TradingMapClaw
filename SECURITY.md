@@ -9,7 +9,7 @@ TradingMapClaw (TMC) operates within a strict, deliberately constrained security
 TMC is a research tool. It does not execute trades.
 
 - No broker API credentials are stored anywhere in the system.
-- None of the 232 Python scripts have trade-execution capability.
+- None of the 468 Python scripts have trade-execution capability.
 - The system cannot place, modify, or cancel orders.
 - This is an architectural constraint, not a config option — there is no "trading mode" to enable.
 
@@ -37,9 +37,9 @@ TMC is a research tool. It does not execute trades.
 
 ### Codex Code Audit
 
-- 230 files scanned by Codex code review.
+- All scripts scanned by Hermes+Codex cross-audit.
 - **0 high-severity bugs.**
-- 425/425 scripts pass `py_compile`.
+- 468/468 scripts pass `py_compile`.
 - Known technical debt (17 bare `except`, 61 hardcoded paths, 36 unclosed file handles, 36 `subprocess` calls without timeout) is logged in the freeze record. These are code-quality items, not exploitable vulnerabilities, and are scheduled for gradual cleanup.
 
 ### Credential Isolation
@@ -78,4 +78,4 @@ The maintainer (Mickey Wei) has a physical disability (right-arm brachial plexus
 
 ---
 
-*Security policy v1.1.1 — 2026-06-30. A Chinese version is available in [SECURITY_CN.md](SECURITY_CN.md).*
+*Security policy v1.1.4 — 2026-07-01. A Chinese version is available in [SECURITY_CN.md](SECURITY_CN.md).*

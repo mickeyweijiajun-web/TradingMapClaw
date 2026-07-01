@@ -2,9 +2,9 @@
 
 ## System Status: FROZEN
 
-TradingMapClaw (TMC) is in **FROZEN** status as of v1.1.1 (2026-06-30). The system is in daily operation and maintenance mode. **No new features will be accepted.**
+TradingMapClaw (TMC) is in **FROZEN** status as of v1.1.4 (2026-07-01). The system is in daily operation and maintenance mode. **No new features will be accepted.**
 
-This is not a temporary freeze. It is a deliberate architectural decision: the system has 232 Python scripts across 425 compilation units, many tightly coupled. Uncontrolled changes pose an existential risk to system stability. The v1.1 incident — where a single missing `id` field crashed all 115 cron jobs for 3 days — demonstrated why this discipline matters.
+This is not a temporary freeze. It is a deliberate architectural decision: the system has 468 Python scripts, many tightly coupled. Uncontrolled changes pose an existential risk to system stability. The v1.1 incident — where a single missing `id` field crashed all 115 cron jobs for 3 days — demonstrated why this discipline matters.
 
 ---
 
@@ -93,4 +93,4 @@ Patience is appreciated. Quality is prioritized over speed.
 
 ---
 
-*Contributing guide v1.1.1 — Generated 2026-06-30.*
+*Contributing guide v1.1.4 — Generated 2026-07-01.*

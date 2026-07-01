@@ -4,7 +4,7 @@
 
 ---
 
-A man who lost 95% of his right arm's function before he was twenty. A man whose colon was removed and whose abdomen now carries a permanent opening. A man who worked inside Wells Fargo, Deutsche Bank, UBS, and JPMorgan — typing with one hand. A man who, in 2026, built an automated investment research system — 232 Python scripts, 115 scheduled jobs, dual-engine AI council — by himself, on a single Mac mini, in two months. His name is Mickey Wei. This is not a story about overcoming adversity. It is a story about a man who refused to accept the dimensions of the room he was given.
+A man who lost 95% of his right arm's function before he was twenty. A man whose colon was removed and whose abdomen now carries a permanent opening. A man who worked inside Wells Fargo, Deutsche Bank, UBS, and JPMorgan — typing with one hand. A man who, in 2026, built an automated investment research system — 468 Python scripts, 115 scheduled jobs, dual-engine AI council — by himself, on a single Mac mini, in two months. His name is Mickey Wei. This is not a story about overcoming adversity. It is a story about a man who refused to accept the dimensions of the room he was given.
 
 ---
 
@@ -70,19 +70,19 @@ He did not disappear.
 
 In May 2026, Mickey began building. He had no prior coding background. He used AI as his engineering partner — not as a crutch, but as a collaborator that could type at the speed of his thoughts, since his left hand alone could not keep up with what he wanted to build.
 
-In two months, he built TradingMapClaw (TMC) v1.1.1:
+In two months, he built TradingMapClaw (TMC) v1.1.4:
 
 - 115 scheduled jobs running automatically, including data collection at 4 AM
-- 232 Python scripts — all passing compilation
+- 468 Python scripts — all passing compilation
 - Coverage of 82 tickers across 5 groups
 - 12+ data sources
 - 13 report types, from intraday snapshots to supply chain chokepoint analysis
 - A dual-engine AI council: GLM-5.2 for fundamentals, GPT-5.5 for technicals, with a synthesis layer where one engine fact-checks the other
 - A monthly budget cap of approximately $55 USD
-- Codex code review: 0 high-severity bugs across 425 compilation units
+- Hermes+Codex cross-audit: 0 high-severity bugs across 468 scripts
 - Reports delivered to Telegram and Feishu — zero missed deliveries
 
-The system ran into a catastrophic failure during its first month: a single missing `id` field in a cron job configuration crashed the entire scheduler. 115 jobs stopped for three days. He diagnosed it, fixed it, patched 24 issues across two repair cycles, and brought all 425 scripts to clean compilation. The incident and repair log is published in full in the system's README — not as a confession, but as evidence of competence.
+The system ran into a catastrophic failure during its first month: a single missing `id` field in a cron job configuration crashed the entire scheduler. 115 jobs stopped for three days. He diagnosed it, fixed it, patched 32 issues across five repair cycles (v1.1 → v1.1.4), and brought all 468 scripts to clean compilation. The incident and repair log is published in full in the system's README — not as a confession, but as evidence of competence.
 
 TradingMapClaw is not a hobby project. It is an answer. To the job market that closed its doors. To the hospital bed that took his colon. To every standard he was measured against and found lacking because of a hand that does not work and a bag that does not come off. He did not ask anyone to lower the standard. He walked around the door and built his own building.
 

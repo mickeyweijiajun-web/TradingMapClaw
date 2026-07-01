@@ -6,11 +6,62 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
-## [v1.1.1] — 2026-06-30 — FROZEN
+## [v1.1.4] — 2026-07-01 — FROZEN
+
+### Data Collection Pipeline Fix
+
+The current frozen release. A `NameError` in the data-collection entry point was silently degrading all T1/T2/T3 reports to stale cache. Root-caused, fixed, and cross-audited. **468/468 scripts compile. Hermes+Codex cross-audit passed. 32 total fixes across v1.1 → v1.1.4.**
+
+### Fixed
+- **P0:** `collect_market_data.py` line 1004 used `Path(__file__)` but the file header was missing `from pathlib import Path` → `NameError` crash. This is the data-collection entry point for all T1/T2/T3 reports — when it crashed, all reports fell back to stale cache (data_freshness exceeded thresholds 43–54×; price data lagging 25–27 hours). Fixed: added `from pathlib import Path`.
+- **P0:** `collect_social_sentiment_v2.py` had the same missing `from pathlib import Path` → sentiment-collection crash. Fixed: added import.
+- **P2:** `t1r3_wrapper.py` — DeepSeek V4 Pro generated `||` double-pipe table prefixes. Fixed: regex post-processing `_fix_deepseek_tables()`.
+- **P2:** `t1r2_wrapper.py` — defensive addition of the same table fix (Codex cross-audit recommendation). Added `_fix_deepseek_tables()`.
+- **P1:** `generate_monday_report.py` Monday validation falsely flagged R2/R3 as missing. Confirmed existing `should_run_on_date()` logic is correct; false positive came from an older version. No code change needed.
+
+### Verification
+- 468/468 scripts compile (`py_compile`)
+- `Path()` import full scan: 118 scripts all pass
+- Hermes+Codex cross-audit: passed
+- Finnhub / Yahoo Finance / CoinGecko connectivity: HTTP 200
+- Cron scheduler: ticking normally; push chain (Telegram + Feishu) verified
+
+---
+
+## [v1.1.3] — 2026-06-30 — SUPERSEDED
+
+### Dual Codex Audit
+
+A second, independent Codex audit was run against v1.1.2. It surfaced one item, which turned out to be a false alarm on verification. +1 fix. 27 total fixes at this point.
+
+### Fixed
+- **P2:** Dual Codex audit flagged a SKILL.md size alarm + ctx residue + t1r1 no-dry-run. Verified: on-disk SKILL.md 99K ✓, no new ctx errors ✓, t1r1 compiles ✓. False alarm — no code change required.
+
+### Superseded
+Superseded by v1.1.4 after a data-collection pipeline `NameError` was discovered.
+
+---
+
+## [v1.1.2] — 2026-06-30 — SUPERSEDED
+
+### Final Seal
+
+Cleanup of custodian caching and gateway module reloading after v1.1.1. +2 fixes.
+
+### Fixed
+- **P2:** Custodian `.pyc` cache not cleared — deleted all `__pycache__`.
+- **P2:** Gateway held an old plugin module in memory — disable/enable triggered a reload.
+
+### Superseded
+Superseded by v1.1.3 (dual Codex audit).
+
+---
+
+## [v1.1.1] — 2026-06-30 — SUPERSEDED
 
 ### Post-Codex-Review Repair
 
-The system was frozen at v1.1 on 2026-06-29. A subsequent Codex code review found 4 additional issues. This release fixes all 4. **425/425 scripts now compile.**
+The system was frozen at v1.1 on 2026-06-29. A subsequent Codex code review found 4 additional issues. This release fixes all 4. **425/425 scripts compiled at this point (later grew to 468 as upstream files were regenerated).**
 
 ### Fixed
 - **P0:** Batch sys.path patch broke 11 scripts in `cron/scripts/` + 8 in `scripts/` with IndentationError — `_CRON_ROOT` block was inserted at column 0 inside `try:` blocks. Fixed: moved `_CRON_ROOT` to module top level, re-indented `from lib.*` imports back into `try:` blocks. All 425 scripts now compile.
@@ -62,7 +113,7 @@ Root cause: `L13_LogCleanup` job missing `id` field → `get_due_jobs()` KeyErro
 - **P3:** `panel_data_writer.py` reported missing. False alarm — file exists (98KB, Jun 18).
 
 ### Superseded
-Superseded by v1.1.1 after Codex code review found batch patch indentation bugs in 19 scripts.
+Superseded by v1.1.1 after Codex code review found batch patch indentation bugs in 19 scripts. (v1.1.1 was itself later superseded by v1.1.2 → v1.1.3 → v1.1.4.)
 
 ---
 
@@ -96,10 +147,13 @@ Superseded by v1.1 due to critical cron scheduler incident (L13_LogCleanup missi
 |---------|------|--------|----------------|
 | v1.0 | 2026-06-29 | SUPERSEDED | Initial freeze. Full system audit. 17 items completed. |
 | v1.1 | 2026-06-29 | SUPERSEDED | Post-incident repair. 20 fixes (5P0/8P1/5P2/2P3). |
-| v1.1.1 | 2026-06-30 | FROZEN | Post-Codex-review repair. 4 fixes (2P0/1P1/1P2). 425/425 scripts compile. |
+| v1.1.1 | 2026-06-30 | SUPERSEDED | Post-Codex-review repair. 4 fixes (2P0/1P1/1P2). |
+| v1.1.2 | 2026-06-30 | SUPERSEDED | Final seal. +2 fixes (custodian pyc + gateway reload). |
+| v1.1.3 | 2026-06-30 | SUPERSEDED | Dual Codex audit passed. +1 fix (false-alarm verification). 27 total. |
+| v1.1.4 | 2026-07-01 | **FROZEN** | Data pipeline fix. +5 fixes (Path import ×2, DeepSeek table ×2, Monday validation confirmed). 468/468 compile. Hermes+Codex cross-audit passed. |
 
-Total fixes across v1.1 + v1.1.1: 24 items.
+Total fixes across v1.1 → v1.1.4: **32 items**.
 
 ---
 
-*Changelog v1.1.1 — Generated 2026-06-30.*
+*Changelog v1.1.4 — Generated 2026-07-01.*
