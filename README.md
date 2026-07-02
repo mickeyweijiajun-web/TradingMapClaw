@@ -9,10 +9,12 @@
 >
 > This project is not a demo of what AI can do. It is proof of what a person can do when they refuse to accept the dimensions of the room they were given. **Not pity. Visibility.** — [full story](STORY.md) · [my 2019 essay on disability & employment](https://www.linkedin.com/in/mickey-wei-5b95aa95/recent-activity/articles/)
 
-[![Status](https://img.shields.io/badge/status-FROZEN%20v1.1.4-2a6b73)](CHANGELOG.md)
-[![Scripts](https://img.shields.io/badge/scripts-468%20compile-5ba8b0)](ARCHITECTURE.md)
+[![Status](https://img.shields.io/badge/status-FROZEN%20v13%20(v1.1.6)-2a6b73)](CHANGELOG.md)
+[![Scripts](https://img.shields.io/badge/scripts-500%20compile-5ba8b0)](ARCHITECTURE.md)
 [![Cron](https://img.shields.io/badge/cron%20jobs-115-5ba8b0)](ARCHITECTURE.md)
+[![Skills](https://img.shields.io/badge/SKILL.md-93-5ba8b0)](ARCHITECTURE.md)
 [![Coverage](https://img.shields.io/badge/tickers-82-5ba8b0)](#coverage)
+[![Delivery](https://img.shields.io/badge/delivery-bilingual%20EN%2FZH-5ba8b0)](CHANGELOG.md)
 [![Bugs](https://img.shields.io/badge/high--severity%20bugs-0-2a6b73)](SECURITY.md)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
 
@@ -20,7 +22,7 @@
 
 ## What is this
 
-TradingMapClaw is a zero-touch, budget-disciplined research pipeline. It collects market data from **12+ free/low-cost sources**, runs it through a **dual-engine AI council** (Hermes GLM-5.2 as Maker, Codex GPT-5.5 as Checker), passes it through a quality gate, and delivers **13 report types** to Telegram and Feishu — fully automated, overnight, every trading day.
+TradingMapClaw is a zero-touch, budget-disciplined research pipeline. It collects market data from **12+ free/low-cost sources**, runs it through a **dual-engine AI council** (Hermes GLM-5.2 as Maker, Codex GPT-5.5 as Checker), passes it through a quality gate, and delivers **13 report types** — **bilingually**: native English to Telegram, full Chinese (DeepSeek translation) to Feishu — fully automated, overnight, every trading day.
 
 It has **no broker connection and cannot execute trades**. It is a research tool: `WATCHLIST_ONLY`.
 
@@ -28,13 +30,15 @@ It has **no broker connection and cannot execute trades**. It is a research tool
 
 | Metric | Value |
 |--------|-------|
-| Python scripts | **468** (468/468 compile) |
+| Python scripts | **500** (500/500 compile) |
 | Cron jobs | **115** (106 enabled) |
-| Coverage tickers | **82** across 5 groups |
+| SKILL.md skill files | **93** |
+| Coverage tickers | **82** (75 unique) across 5 groups |
 | Data sources | **12+** free / low-cost |
 | Report types | **13** (T1/T2/T3/T11/T15/T16/T17/T18/T19/T25/T26/R1–R3/Visual) |
+| Delivery | **Bilingual** — English (Telegram) + Chinese (Feishu, DeepSeek) |
 | Monthly cost | **~$55 USD** hard cap |
-| High-severity bugs | **0** (Hermes+Codex cross-audit) |
+| High-severity bugs | **0** (Hermes+Codex cross-audit, 60 fixes resolved) |
 | Runtime | macOS 26.5.1 · single Mac mini (Apple Silicon) |
 
 ---
@@ -42,13 +46,14 @@ It has **no broker connection and cannot execute trades**. It is a research tool
 ## Architecture at a glance
 
 ```
-Layer 1  Data Collection   → 226 scripts · 115 cron jobs · 12+ sources → YAML
+Layer 1  Data Collection   → 500 scripts · 115 cron jobs · 12+ sources → YAML
 Layer 2  Quality Gate      → freshness + completeness + schema (ports 8080/8888)
 Layer 3  Dual-Engine Council
            Engine A (Maker)   Hermes GLM-5.2   → fundamentals · valuation · options
            Engine B (Checker) Codex GPT-5.5    → technicals · flow · risk · fact-check A
            Model hierarchy    GLM-5.2 → GPT-5.5 → DeepSeek-V4-Pro → Qwen3-14b (local)
-Layer 4  Report + Delivery → 30+ wrappers → Telegram + Feishu
+Layer 4  Report + Delivery → 33 wrappers → bilingual_send.py
+           English (original) → Telegram   ·   Chinese (DeepSeek) → Feishu
 ```
 
 Full detail in [ARCHITECTURE.md](ARCHITECTURE.md).
@@ -82,7 +87,13 @@ This is a survival protocol for a solo-developed system, not a style guide. See 
 
 ## Status: FROZEN
 
-TMC is **frozen at v1.1.4** (2026-07-01, Hermes+Codex cross-audit passed). It is in daily operation and maintenance only. **No new features are accepted.** Bug reports, documentation fixes, and data-source suggestions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+TMC is **frozen at v13 (v1.1.6)** (2026-07-02 CST, Hermes+Codex cross-audit passed). It is in daily operation and maintenance only. **No new features are accepted.** Bug reports, documentation fixes, and data-source suggestions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+**What v13 shipped:**
+
+- **Bilingual delivery system** — `bilingual_send.py` (drop-in wrapper) routes native English reports to Telegram and full Chinese translations to Feishu. `lib/report_translator.py` uses DeepSeek API (primary) with GLM-4-Flash fallback, file-based caching, and 8 translation rules. 30 cron LLM prompts converted Chinese → English; 33 scripts swapped to the bilingual wrapper.
+- **60 fixes resolved** across v1.1 → v1.1.6 (4 P0 incidents documented with root-cause reports), ending at **500/500 scripts compiling**, 0 high-severity bugs.
+- **`audit_bilingual.py`** — 6-check verification suite (0 errors, 0 warnings).
 
 Version history: [CHANGELOG.md](CHANGELOG.md) · Security posture: [SECURITY.md](SECURITY.md)
 
@@ -135,4 +146,4 @@ If you're living with brachial plexus injury, ulcerative colitis, IBD, Crohn's, 
 
 ---
 
-*README v1.1.4 · © 2026 Mickey Wei · [tradingmapclaw.com](https://tradingmapclaw.com)*
+*README v13 (v1.1.6) · © 2026 Mickey Wei · [tradingmapclaw.com](https://tradingmapclaw.com)*
