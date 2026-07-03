@@ -1,10 +1,12 @@
 # Contributing to TradingMapClaw
 
-## System Status: FROZEN
+> **v1.6.1 | 2026-07-03**
 
-TradingMapClaw (TMC) is in **FROZEN** status as of v1.1.4 (2026-07-01). The system is in daily operation and maintenance mode. **No new features will be accepted.**
+## System Status: Active Development, Tightly Controlled
 
-This is not a temporary freeze. It is a deliberate architectural decision: the system has 468 Python scripts, many tightly coupled. Uncontrolled changes pose an existential risk to system stability. The v1.1 incident — where a single missing `id` field crashed all 115 cron jobs for 3 days — demonstrated why this discipline matters.
+TradingMapClaw (TMC) is at **v1.6.1** (2026-07-03) and in daily operation and active maintenance. This is not a green-field project accepting arbitrary feature requests — it is a solo-maintained, 499-script production system, and changes are deliberately constrained.
+
+The system has 499 Python scripts, many tightly coupled. Uncontrolled changes pose an existential risk to system stability. The v1.1 incident — where a single missing `id` field crashed all 115 cron jobs for 3 days — and the v1.6 Codex audit — which found a `HERMES_HOME` undefined-variable bug that had silently disabled Engine C's memory — both demonstrate why this discipline matters. See [CHANGELOG.md](CHANGELOG.md) for the full incident and fix history.
 
 ---
 
@@ -46,22 +48,31 @@ If you know of a free or low-cost data source that could replace or supplement o
 - Whether it has a Python library
 - Why it is better than the current source it would replace
 
-Note: The system's monthly budget cap is ~$55 USD. Suggestions for paid data sources are only useful if they fit within this budget.
+Note: the system's monthly budget cap is **$55 USD**. Suggestions for paid data sources are only useful if they fit within this budget — see [ARCHITECTURE.md](ARCHITECTURE.md#1-design-principles) for the budget-discipline principle.
 
 ---
 
-## What is NOT Accepted
+## What Is NOT Accepted
 
-- **Feature requests** — the system is frozen. No new report types, no new analysis modules, no new delivery channels.
+- **Speculative feature requests** — new report types, new analysis modules, and new delivery channels require a clear justification tied to a real gap, not "it would be nice." The bar is high because every new surface adds to a 499-script maintenance load carried by one person.
 - **Code refactoring PRs** — see Engineering Constitution rule #4 (Surgical Changes). Uncontrolled refactoring is classified as a "Runaway Refactor" failure mode.
 - **New dependencies** — see Engineering Constitution rule #8. Any new dependency must be justified against standard library / existing libraries. PRs adding `requirements.txt` entries without justification will be rejected.
-- **Changes to frozen modules** — `send_reports`, `runtime_guard`, `scheduler`, and `stocks.yaml` schema cannot be modified.
+- **Changes to frozen modules** — `send_reports.py`, `runtime_guard`, `scheduler`, and the `stocks.yaml` schema cannot be modified. See [ARCHITECTURE.md](ARCHITECTURE.md#10-frozen-modules--engineering-constitution).
+
+---
+
+## How to Propose a Change
+
+1. **Open an Issue first.** Describe the problem, not the solution. State which script(s), cron job(s), or report type(s) are affected.
+2. **Wait for a frozen-module check.** If the proposal touches `send_reports.py`, `runtime_guard`, `scheduler`, or `stocks.yaml` schema, it will be rejected outright — propose a wrapper instead (see `bilingual_send.py` as the precedent).
+3. **State the smallest possible fix.** Per rule #4 below, PRs should be the minimum diff that solves the stated problem.
+4. **Include a verification step.** How did you confirm the fix works? `py_compile`, a dry run, a specific test case — see rule #5.
 
 ---
 
 ## Hard Constraint: Engineering Constitution
 
-All contributions — even bug fixes — must comply with the [Engineering Constitution](skills/engineering_constitution.md). The 10 rules:
+All contributions — even bug fixes — must comply with the Engineering Constitution (source: Karpathy's `CLAUDE.md`, distilled 2026-06-29; see `skills/engineering_constitution.md`). The 10 rules:
 
 1. **Read before write** — understand existing patterns before modifying code.
 2. **Think before code** — state what you're doing and why before implementing.
@@ -78,6 +89,21 @@ PRs that violate these rules will be rejected, even if the code is functionally 
 
 ---
 
+## Frozen-Module Policy
+
+The following are FROZEN and out of scope for any PR, regardless of how small:
+
+| Module | Why it's frozen |
+|--------|------------------|
+| `send_reports.py` (1360 lines) | Core push infrastructure. `bilingual_send.py` is the sanctioned way to extend delivery behavior without touching this file. |
+| `runtime_guard` | System health monitoring — a bug here can mask failures across the whole pipeline. |
+| `scheduler` | Cron engine — the v1.1 incident (missing `id` field crashing all 115 jobs) originated adjacent to this layer. |
+| `stocks.yaml` schema | Every downstream report and script assumes this schema. A silent schema change breaks 82-ticker coverage system-wide. |
+
+If your proposal requires touching a frozen module, the correct pattern is a wrapper (see `bilingual_send.py` wrapping `send_reports.py`) — open an Issue describing why a wrapper isn't sufficient before proposing direct modification.
+
+---
+
 ## Review Process
 
 1. All PRs are reviewed by the maintainer (Mickey Wei).
@@ -87,10 +113,10 @@ PRs that violate these rules will be rejected, even if the code is functionally 
 
 ### A Note on Response Time
 
-The maintainer has a physical disability (right-arm brachial plexus avulsion, permanent end ileostomy) that limits his mobility and typing speed. He reviews contributions with one working hand. Response times may be slower than typical open-source projects. This is a solo-maintained system — there is no team of reviewers.
+The maintainer has a physical disability (right-arm brachial plexus avulsion, permanent ostomy) that limits his mobility and typing speed. He reviews contributions with one working hand. Response times may be slower than typical open-source projects. This is a solo-maintained system — there is no team of reviewers.
 
 Patience is appreciated. Quality is prioritized over speed.
 
 ---
 
-*Contributing guide v1.1.4 — Generated 2026-07-01.*
+*Contributing guide v1.6.1 | 2026-07-03. A Chinese version is available in [CONTRIBUTING_CN.md](CONTRIBUTING_CN.md).*

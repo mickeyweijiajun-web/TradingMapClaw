@@ -1,5 +1,7 @@
 # Security Policy
 
+> **TradingMapClaw (TMC) v1.6.1 | 2026-07-03**
+
 ## Security Boundary
 
 TradingMapClaw (TMC) operates within a strict, deliberately constrained security perimeter, designed on a **least-capability** philosophy — only the permissions it needs, nothing extra.
@@ -9,7 +11,7 @@ TradingMapClaw (TMC) operates within a strict, deliberately constrained security
 TMC is a research tool. It does not execute trades.
 
 - No broker API credentials are stored anywhere in the system.
-- None of the 468 Python scripts have trade-execution capability.
+- None of the **499 Python scripts** have trade-execution capability.
 - The system cannot place, modify, or cancel orders.
 - This is an architectural constraint, not a config option — there is no "trading mode" to enable.
 
@@ -35,12 +37,12 @@ TMC is a research tool. It does not execute trades.
 
 ## Security Practices
 
-### Codex Code Audit
+### Dual-Engine Cross-Audit
 
 - All scripts scanned by Hermes+Codex cross-audit.
-- **0 high-severity bugs.**
-- 468/468 scripts pass `py_compile`.
-- Known technical debt (17 bare `except`, 61 hardcoded paths, 36 unclosed file handles, 36 `subprocess` calls without timeout) is logged in the freeze record. These are code-quality items, not exploitable vulnerabilities, and are scheduled for gradual cleanup.
+- **499/499 scripts pass `py_compile`.**
+- The most recent Codex audit (post v1.5 refactoring) found and fixed **5 bugs** — 1 critical, 1 high, 1 moderate, 2 low severity. See [CHANGELOG.md](CHANGELOG.md) for the full list.
+- A joint Hermes+Codex **Monday readiness audit** covering 7 operational risk points passed 7/7 (PASS or FIXED) ahead of the v1.6.1 seal.
 
 ### Credential Isolation
 
@@ -50,11 +52,20 @@ TMC is a research tool. It does not execute trades.
 
 ### Frozen Modules
 
-Four critical modules are frozen and cannot be modified without explicit operator approval: `send_reports`, `runtime_guard`, `scheduler`, and the `stocks.yaml` schema.
+Four critical modules are frozen and cannot be modified without explicit operator approval:
+
+- `send_reports.py` — push delivery infrastructure (1360 lines)
+- `runtime_guard` — system health monitoring
+- `scheduler` — cron engine
+- `stocks.yaml` schema — data schema
 
 ### Budget Watchdog
 
-A monthly API spend cap of ~$55 USD is enforced in real time, pausing non-essential API calls near the limit to prevent runaway cost from bugs or misconfiguration.
+A monthly API spend cap of **$55 USD (¥400)** is enforced nightly at 23:00 BJT, pausing non-essential API calls near the limit to prevent runaway cost from bugs or misconfiguration. The tracker aggregates real costs from `codex_usage.jsonl` and `quality_scores.csv` — see [CHANGELOG.md](CHANGELOG.md) for the v1.6.1 fix that made this accurate.
+
+### 4-Level Data Fallback Chain
+
+Every data field goes through direct API → proxy route → Python library → local cache before being marked missing. This reduces the incentive to bypass the proxy boundary or hit undocumented endpoints under pressure to "just get the data." Full detail in [ARCHITECTURE.md](ARCHITECTURE.md#7-data-sources--fallback-chain).
 
 ---
 
@@ -68,7 +79,7 @@ If you believe you have found a security vulnerability in TradingMapClaw:
 
 ### Response Time
 
-The maintainer (Mickey Wei) has a physical disability (right-arm brachial plexus avulsion, permanent end ileostomy) that limits mobility and typing speed. Acknowledgement will come as fast as possible, but response times may be slower than typical open-source projects. This is a solo-maintained system — there is no security team.
+The maintainer (Mickey Wei) has a physical disability (right-arm brachial plexus avulsion, permanent ostomy) that limits mobility and typing speed. Acknowledgement will come as fast as possible, but response times may be slower than typical open-source projects. This is a solo-maintained system — there is no security team.
 
 ### Scope
 
@@ -78,4 +89,4 @@ The maintainer (Mickey Wei) has a physical disability (right-arm brachial plexus
 
 ---
 
-*Security policy v1.1.4 — 2026-07-01. A Chinese version is available in [SECURITY_CN.md](SECURITY_CN.md).*
+*Security policy v1.6.1 | 2026-07-03. A Chinese version is available in [SECURITY_CN.md](SECURITY_CN.md).*

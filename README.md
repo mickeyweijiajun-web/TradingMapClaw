@@ -1,7 +1,8 @@
 # TradingMapClaw (TMC)
 
+> **v1.6.1 | 2026-07-03**
 > **One Hand. One Bag. One System.**
-> A production-grade, dual-engine AI research system for US equities and crypto — built and run solo on a single Mac mini for **~$55/month**.
+> A production-grade, dual-engine AI research system running a multi-model council for US equities and crypto — built and run solo on a single Mac mini for **~$55/month**.
 
 > ### 🖐️ Read this first → [**STORY.md**](STORY.md)
 >
@@ -9,36 +10,47 @@
 >
 > This project is not a demo of what AI can do. It is proof of what a person can do when they refuse to accept the dimensions of the room they were given. **Not pity. Visibility.** — [full story](STORY.md) · [my 2019 essay on disability & employment](https://www.linkedin.com/in/mickey-wei-5b95aa95/recent-activity/articles/)
 
-[![Status](https://img.shields.io/badge/status-FROZEN%20v13%20(v1.1.6)-2a6b73)](CHANGELOG.md)
-[![Scripts](https://img.shields.io/badge/scripts-500%20compile-5ba8b0)](ARCHITECTURE.md)
+[![Status](https://img.shields.io/badge/status-v1.6.1%20Active-2a6b73)](CHANGELOG.md)
+[![Scripts](https://img.shields.io/badge/scripts-499%20compile-5ba8b0)](ARCHITECTURE.md)
 [![Cron](https://img.shields.io/badge/cron%20jobs-115-5ba8b0)](ARCHITECTURE.md)
 [![Skills](https://img.shields.io/badge/SKILL.md-93-5ba8b0)](ARCHITECTURE.md)
 [![Coverage](https://img.shields.io/badge/tickers-82-5ba8b0)](#coverage)
 [![Delivery](https://img.shields.io/badge/delivery-bilingual%20EN%2FZH-5ba8b0)](CHANGELOG.md)
-[![Bugs](https://img.shields.io/badge/high--severity%20bugs-0-2a6b73)](SECURITY.md)
+[![Cost](https://img.shields.io/badge/cost-%2455%2Fmonth%20cap-2a6b73)](#monthly-cost)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
 
 ---
 
 ## What is this
 
-TradingMapClaw is a zero-touch, budget-disciplined research pipeline. It collects market data from **12+ free/low-cost sources**, runs it through a **dual-engine AI council** (Hermes GLM-5.2 as Maker, Codex GPT-5.5 as Checker), passes it through a quality gate, and delivers **13 report types** — **bilingually**: native English to Telegram, full Chinese (DeepSeek translation) to Feishu — fully automated, overnight, every trading day.
+One model can be confidently wrong. Two engines catch it. A council of three decides.
+
+TradingMapClaw is a zero-touch, budget-disciplined research pipeline built around that idea. It collects market data from **12+ free/low-cost sources**, runs it through a **Dual-Engine architecture** — **Hermes Agent** (orchestration + fundamental/macro/sentiment reasoning) and **Codex / GPT-5.5** (independent technical analysis that cross-verifies Hermes's numbers) — and beneath that, a **Multi-Model Council** of **DeepSeek V4 Pro, GLM-5.2, and GPT-5.5** splits the work across three analysis roles (Engine A/B/C). It passes the result through a quality gate and delivers structured reports **bilingually**: native English to Telegram, full Chinese (DeepSeek translation) to Feishu — fully automated, overnight, every trading day.
 
 It has **no broker connection and cannot execute trades**. It is a research tool: `WATCHLIST_ONLY`.
+
+### Why this is different
+
+A single LLM can produce a plausible-sounding report with a wrong number in it, and nothing about the prose will tell you that. TMC's answer is structural, not cosmetic:
+
+- **Dual-Engine cross-verification** — Engine B (Codex/GPT-5.5) independently re-derives Engine A's (Hermes) key numbers — PE, revenue growth, target price, 52-week range. If they agree within 5%, confidence rises. If they don't, the discrepancy is printed in the report, not smoothed over.
+- **Multi-Model Council** — DeepSeek V4 Pro, GLM-5.2, and GPT-5.5 each own a role (fundamentals / technicals / macro-sentiment) so no single vendor's model, training bias, or outage can silently define the whole analysis.
+- **Council War Room** — for contested calls, a three-round vote (DeepSeek → GLM-5.2 review → GPT-5.5 tiebreaker) produces one BUY/HOLD/SELL with a confidence score, not three shrugging opinions.
+
+Full mechanics in [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ### By the numbers
 
 | Metric | Value |
 |--------|-------|
-| Python scripts | **500** (500/500 compile) |
+| Python scripts | **499** (all compile) |
 | Cron jobs | **115** (106 enabled) |
 | SKILL.md skill files | **93** |
 | Coverage tickers | **82** (75 unique) across 5 groups |
 | Data sources | **12+** free / low-cost |
 | Report types | **13** (T1/T2/T3/T11/T15/T16/T17/T18/T19/T25/T26/R1–R3/Visual) |
 | Delivery | **Bilingual** — English (Telegram) + Chinese (Feishu, DeepSeek) |
-| Monthly cost | **~$55 USD** hard cap |
-| High-severity bugs | **0** (Hermes+Codex cross-audit, 60 fixes resolved) |
+| Monthly cost | **~$55 USD** hard cap (actual spend tracks near ~$7; see [cost breakdown](#monthly-cost)) |
 | Runtime | macOS 26.5.1 · single Mac mini (Apple Silicon) |
 
 ---
@@ -46,19 +58,60 @@ It has **no broker connection and cannot execute trades**. It is a research tool
 ## Architecture at a glance
 
 ```
-Layer 1  Data Collection   → 500 scripts · 115 cron jobs · 12+ sources → YAML
-Layer 2  Quality Gate      → freshness + completeness + schema (ports 8080/8888)
-Layer 3  Dual-Engine Council
-           Engine A (Maker)   Hermes GLM-5.2   → fundamentals · valuation · options
-           Engine B (Checker) Codex GPT-5.5    → technicals · flow · risk · fact-check A
-           Model hierarchy    GLM-5.2 → GPT-5.5 → DeepSeek-V4-Pro → Qwen3-14b (local)
-Layer 4  Report + Delivery → 33 wrappers → bilingual_send.py
-           English (original) → Telegram   ·   Chinese (DeepSeek) → Feishu
+                    ┌─────────────────────────────────────────┐
+                    │         Data Sources (12+)              │
+                    │  Yahoo Finance · FMP · Finnhub · SEC    │
+                    │  FRED · Reddit · NewsAPI · Polymarket   │
+                    │  EDGAR · yfinance · ApeWisdom · GitHub  │
+                    │  GDELT · CoinGecko · Binance            │
+                    └────────────────┬────────────────────────┘
+                                     │ proxy:127.0.0.1:10808
+                    ┌────────────────▼────────────────────────┐
+                    │      Cron Scheduler (115 jobs)          │
+                    │   499 Python scripts (all compile ✓)    │
+                    │   29 LLM-driven · 76 script-only        │
+                    └────────────────┬────────────────────────┘
+                                     │
+                    ┌────────────────▼────────────────────────┐
+                    │        Quality Gate / Pre-Gate          │
+                    │   4-Level Fallback Chain                │
+                    │   Ports: 8080 (API) · 8888 (Dashboard)  │
+                    └────────────────┬────────────────────────┘
+                                     │
+         ┌───────────────────────────┼───────────────────────────┐
+         │                           │                           │
+  ┌──────▼──────┐          ┌────────▼────────┐          ┌───────▼──────┐
+  │  Engine A   │          │    Engine B      │          │  Engine C    │
+  │  Hermes     │          │    Codex         │          │  Hermes      │
+  │  GLM-5.2    │          │    GPT-5.5       │          │  GLM-5.2     │
+  │ Fundamentals│          │ Technicals/Flow  │          │ Macro/Sent   │
+  │  Valuation  │          │ Cross-verify A   │          │  Regulatory  │
+  │  Insider    │          │  Options         │          │  Industry    │
+  └──────┬──────┘          └────────┬────────┘          └───────┬──────┘
+         │                           │                           │
+         └───────────────────────────┼───────────────────────────┘
+                                     │
+                    ┌────────────────▼────────────────────────┐
+                    │      Synthesis / Council Layer          │
+                    │   Engine B verifies Engine A's numbers  │
+                    │   If pass → confidence +0.1             │
+                    │   Consensus · Divergence · Co-author    │
+                    │   All engines must complete (no partial)│
+                    └────────────────┬────────────────────────┘
+                                     │
+                    ┌────────────────▼────────────────────────┐
+                    │     Bilingual Delivery Layer            │
+                    │   English (Telegram) · Chinese (Feishu) │
+                    └────────────────┬────────────────────────┘
+
+    Model fallback chain: GLM-5.2 → GPT-5.5 → DeepSeek V4 Pro → Qwen3 14B (local)
+    Translation: DeepSeek API (primary) → GLM-4-Flash (fallback)
+    Delivery: English → Telegram · Chinese → Feishu
 ```
 
-Full detail in [ARCHITECTURE.md](ARCHITECTURE.md).
+Full detail — including the six-step execution flow, hard constraints, and interactive-vs-cron paths — in [ARCHITECTURE.md](ARCHITECTURE.md).
 
-The council is **not a vote** — it is structured adversarial review. Engine B actively tries to find errors in Engine A's numbers. Divergences are flagged, not hidden.
+The council is **not a vote first, ask questions later** — it is structured cross-verification. Engine B actively re-checks Engine A's numbers before synthesis. Divergences are flagged, not hidden.
 
 ---
 
@@ -66,10 +119,29 @@ The council is **not a vote** — it is structured adversarial review. Engine B 
 
 82 tickers across 5 groups:
 
-- **A · Macro** (6) — indices, rates, volatility, macro anchors
+- **A · Macro** (6) — SPX, NDX, DJI, GLD, WTI, BTC
 - **B · Core Holdings** (8) — MSFT · META · NVDA · CRWV · RKLB · AVGO · NOW · SPCX
-- **C · Hot + Watchlist** (55) — high-attention names + rolling watchlist
+- **C · Hot + Watchlist** (56) — 10 high-attention names + 46-ticker rolling watchlist
 - **D · Crypto** (13) — majors + selected alts
+
+75 unique tickers total (some overlap across groups).
+
+---
+
+## Monthly cost
+
+**Headline: ~$55/month operating cap.** Actual measured spend runs far under that ceiling.
+
+| Component | Monthly Cost ($) | Basis |
+|-----------|------------------|-------|
+| T2 + T3 daily reports (GPT-5.5) | ~$4.68 | 44 calls/mo, actual logged cost |
+| Other Hermes agent jobs (DeepSeek/GLM) | ~$1.15 | ~338 calls/mo, actual token rates |
+| Codex CLI (T26, bull/bear, etc.) | ~$1.56 | 214 logged calls over 34 days |
+| DeepSeek translation (Feishu) | ~$0.04 | 22 reports/mo × ~5K tokens |
+| **Actual total** | **~$7.43** | 13.5% of the $55 budget cap |
+| **Budget cap** | **$55** | Hard ceiling, nightly-enforced |
+
+Why it stays cheap: 76 of 115 jobs are script-only (zero LLM cost), DeepSeek V4 Pro handles the majority of LLM calls at ~$0.0003/1K tokens, and local Qwen3 14B is free. See [README full cost breakdown](README_v161_SOURCE.md) methodology and [ARCHITECTURE.md](ARCHITECTURE.md) for the fallback chain.
 
 ---
 
@@ -81,21 +153,22 @@ Every AI-assisted change is bound by 10 rules (derived from Karpathy's `CLAUDE.m
 5. Verification · 6. Goal-driven · 7. Debug, don't guess · 8. No new dependencies without justification ·
 9. Communicate uncertainty · 10. Watch failure modes.
 
-This is a survival protocol for a solo-developed system, not a style guide. See [CONTRIBUTING.md](CONTRIBUTING.md).
+This is a survival protocol for a solo-developed, 499-script system, not a style guide. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
-## Status: FROZEN
+## Status: v1.6.1 — Active
 
-TMC is **frozen at v13 (v1.1.6)** (2026-07-02 CST, Hermes+Codex cross-audit passed). It is in daily operation and maintenance only. **No new features are accepted.** Bug reports, documentation fixes, and data-source suggestions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+TMC is at **v1.6.1** (2026-07-03), in daily operation and maintenance. Recent work: budget tracker rewritten to read real Codex CLI + Hermes usage logs, a T26 Monday race condition fixed, multi-engine timeout tightened, and a joint Hermes+Codex Monday-readiness audit passed 7/7.
 
-**What v13 shipped:**
+**What v1.6 → v1.6.1 shipped:**
 
-- **Bilingual delivery system** — `bilingual_send.py` (drop-in wrapper) routes native English reports to Telegram and full Chinese translations to Feishu. `lib/report_translator.py` uses DeepSeek API (primary) with GLM-4-Flash fallback, file-based caching, and 8 translation rules. 30 cron LLM prompts converted Chinese → English; 33 scripts swapped to the bilingual wrapper.
-- **60 fixes resolved** across v1.1 → v1.1.6 (4 P0 incidents documented with root-cause reports), ending at **500/500 scripts compiling**, 0 high-severity bugs.
-- **`audit_bilingual.py`** — 6-check verification suite (0 errors, 0 warnings).
+- **Multi-engine deep analysis** — the 4-step Engine C → Engine A → Engine B → Synthesis flow, with mandatory cross-verification and an all-must-complete gate (no partial reports).
+- **Codex audit: 5 bugs found and fixed** post-refactoring, including a critical `HERMES_HOME` undefined-variable bug that had silently disabled Engine C's memory for every run.
+- **Budget tracker fix** — `token_budget_check.py` now aggregates real costs from `codex_usage.jsonl` (248 logged entries) and `quality_scores.csv` instead of showing a stale ¥0.00.
+- **Monday readiness audit** — 7-point Hermes+Codex joint audit, all items PASS or FIXED (T26 race condition resolved, multi-engine timeout resolved).
 
-Version history: [CHANGELOG.md](CHANGELOG.md) · Security posture: [SECURITY.md](SECURITY.md)
+Full version history: [CHANGELOG.md](CHANGELOG.md) · Security posture: [SECURITY.md](SECURITY.md)
 
 ---
 
@@ -110,7 +183,7 @@ I help solo operators and serious investors build their own low-cost, production
 | **System Blueprint** | 90-min deep dive + custom roadmap + 30-day support | **$699** |
 | **Skill Packs** | Budget Watchdog · Cron Recovery · Dual-Engine Council · Quality Gate | **$19–99** |
 
-- **Book a call / audit:** see the landing page at [tradingmapclaw.com](https://tradingmapclaw.com)
+- **Book a call / audit:** see the landing page at [tradingmapclaw.com](https://www.tradingmapclaw.com)
 - **Writing:** [Substack @tradingmapclaw](https://tradingmapclaw.substack.com) · [Medium @tradingmapclaw](https://medium.com/@tradingmapclaw)
 - **Threads:** [@tradingmapclaw](https://www.threads.net/@tradingmapclaw) · **LinkedIn:** [Mickey Wei](https://www.linkedin.com/in/mickey-wei-5b95aa95/)
 - **Telegram:** [@tradingmapclaw](https://t.me/tradingmapclaw) · **WhatsApp/Phone:** [+44 7857 086337](https://wa.me/447857086337)
@@ -128,15 +201,23 @@ If the open-source work or writing helped you, a tip keeps the $55/month system 
 
 ---
 
-## The story
+## About / The Story
 
-Before I was twenty, a hit-and-run collision tore the nerves in my right arm — a brachial plexus avulsion that cost me ~95% of the function in my right hand. Three surgeries. I relearned everything left-handed and sat the national college entrance exam one-handed. Years later, inside the back offices of **Wells Fargo, Deutsche Bank, UBS, and JPMorgan**, I did the work with one hand and asked for no lowered standard. Then ulcerative colitis took my colon — five more surgeries across eight years, and a **permanent ostomy** I manage every day. Eight surgeries total.
+I build systems that catch their own mistakes. That instinct did not come from a computer science background — I didn't have one until two months before this repository existed. It came from a life that repeatedly forced me to build verification into everything, because there was no room for anyone, including myself, to assume I'd get it right the easy way.
 
-In May 2026, with **no prior coding background**, I started building. AI became my engineering partner — not a crutch, but a collaborator that types at the speed of my thoughts, because my left hand alone couldn't keep up. Two months later: this system. It runs at 4 AM while I sleep, and it does not know or care that it was built by a man with one hand and a stoma bag. That is the point.
+**Not pity. Visibility.**
 
-**I didn't overcome anything. I refused to be overcome.** → [Read the full story in STORY.md](STORY.md)
+Before I was twenty, a hit-and-run collision tore the nerves in my right arm — a brachial plexus avulsion that cost me roughly 95% of the function in my right hand. I relearned everything left-handed: tying shoelaces, writing, typing. I sat China's national college entrance exam, the gaokao, one-handed, every subject, every page.
 
-If you're living with brachial plexus injury, ulcerative colitis, IBD, Crohn's, or a permanent ostomy: you are not invisible. **Not pity. Visibility.**
+I built a career anyway — back-office operations at **Wells Fargo, Deutsche Bank, UBS, JPMorgan, and eToro**: trade settlement, reconciliation, maker-checker controls, the plumbing that keeps global finance from breaking. Not front office. Not glamorous. But it is where you learn, at a granular level, that every number that reaches a client has already been checked by someone whose job is to doubt it. That habit of mind — never trust a single unverified number — is the same principle now running inside TMC's Dual-Engine cross-verification.
+
+Then came a second, unrelated collapse: ulcerative colitis, an autoimmune disease that attacked my colon. Eight surgeries over eight years. What began as a temporary ileostomy became, after complications, a **permanent ostomy** I manage every day. Two conditions, one body, both mostly invisible unless I choose to talk about them.
+
+In May 2026, with zero prior coding background, I started building anyway. AI became my engineering partner — not a crutch, but a collaborator that could type at the speed of my thoughts, because my left hand alone couldn't keep up with what I wanted to build. Two months later: TradingMapClaw. 499 Python scripts. 115 scheduled jobs. A dual-engine, multi-model council that catches its own errors before they reach a report. It runs at 4 AM while I sleep, and it does not know or care that it was built by a man with one working hand and a stoma bag.
+
+**Ability first, background second.** The story is why you might stop reading for a second. The 499 scripts, the 115 cron jobs, and the cross-verification protocol are why you should keep going. → **Read the full story in [STORY.md](STORY.md)**, including the medical history in detail, the career walls that closed and the ones that opened anyway, and what "not pity, visibility" actually asks of you.
+
+If you're living with a brachial plexus injury, ulcerative colitis, IBD, Crohn's, or a permanent ostomy: you are not invisible.
 
 ---
 
@@ -146,4 +227,10 @@ If you're living with brachial plexus injury, ulcerative colitis, IBD, Crohn's, 
 
 ---
 
-*README v13 (v1.1.6) · © 2026 Mickey Wei · [tradingmapclaw.com](https://tradingmapclaw.com)*
+## 中文
+
+本项目提供完整的中文文档：[README_CN.md](README_CN.md) · [ARCHITECTURE_CN.md](ARCHITECTURE_CN.md) · [SECURITY_CN.md](SECURITY_CN.md) · [CONTRIBUTING_CN.md](CONTRIBUTING_CN.md) · [CHANGELOG_CN.md](CHANGELOG_CN.md) · [STORY_CN.md](STORY_CN.md)
+
+---
+
+*README v1.6.1 | 2026-07-03 · © 2026 Mickey Wei · [tradingmapclaw.com](https://www.tradingmapclaw.com)*
