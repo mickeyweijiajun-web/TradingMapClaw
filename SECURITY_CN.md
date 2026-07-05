@@ -1,6 +1,6 @@
 # 安全说明
 
-> **TradingMapClaw（TMC）v1.6.1 | 2026-07-03**
+> **TradingMapClaw（TMC）v1.8 | 2026-07-04**
 
 ## 安全边界
 
@@ -11,7 +11,7 @@ TradingMapClaw（TMC）在严格且刻意受限的安全边界内运行。系统
 TMC 是研究工具。不执行交易。
 
 - 系统中任何位置都不存储券商 API 凭证。
-- **499 个** Python 脚本中没有任何交易执行能力。
+- **502+ 个** Python 脚本中没有任何交易执行能力。
 - 系统不能下单、改单或撤单。
 - 这是架构约束，不是配置选项——没有"交易模式"可以开启。
 
@@ -37,12 +37,12 @@ TMC 是研究工具。不执行交易。
 
 ## 安全实践
 
-### 双引擎交叉审计
+### 三引擎交叉审计
 
 - 全部脚本经 Hermes+Codex 交叉审计扫描。
-- **499/499 脚本通过 `py_compile` 语法检查。**
-- 最近一次 Codex 审计（v1.5 重构后）发现并修复了 **5 个 bug**——1 个严重、1 个高危、1 个中等、2 个低危。完整清单见 [CHANGELOG_CN.md](CHANGELOG_CN.md)。
-- 在 v1.6.1 封版前，Hermes+Codex 联合的**周一就绪审计**覆盖 7 个运营风险点，全部 7/7 通过（PASS 或 FIXED）。
+- **502+/502+ 脚本通过 `py_compile` 语法检查。**
+- 两轮 Hermes+Codex 联合审计共发现并修复 **14 个 bug**——其中包括导致 Engine C 记忆功能失效的严重 `HERMES_HOME` 未定义变量 bug。完整清单见 [CHANGELOG_CN.md](CHANGELOG_CN.md)。
+- 在 v1.8 封版前，Hermes+Codex 联合的**周一就绪审计**覆盖 7 个运营风险点，全部 7/7 通过（PASS 或 FIXED）。
 
 ### 凭证隔离
 
@@ -61,7 +61,7 @@ TMC 是研究工具。不执行交易。
 
 ### 预算看门狗
 
-月度 API 支出上限 **55 美元（¥400）**在每晚 23:00（北京时间）强制执行，在接近上限时暂停非必要 API 调用，防止 bug 或配置错误导致的失控成本。跟踪器从 `codex_usage.jsonl` 和 `quality_scores.csv` 聚合真实成本——v1.6.1 的修复细节见 [CHANGELOG_CN.md](CHANGELOG_CN.md)。
+月度 API 支出上限 **55 美元（¥400）**持续强制执行，检查点为北京时间 23:00，在接近上限时暂停非必要 API 调用，防止 bug 或配置错误导致的失控成本。实际支出约为每月 7 美元（占上限的 13.5%）。跟踪器从 `codex_usage.jsonl` 和 `quality_scores.csv` 聚合真实成本——v1.6.1 的修复细节见 [CHANGELOG_CN.md](CHANGELOG_CN.md)。
 
 ### 4 级数据回退链
 
@@ -100,4 +100,4 @@ TMC 是研究工具。不执行交易。
 
 ---
 
-*安全说明 v1.6.1 | 2026-07-03 生成。英文版本见 [SECURITY.md](SECURITY.md)。*
+*安全说明 v1.8 | 2026-07-04 生成。英文版本见 [SECURITY.md](SECURITY.md)。*

@@ -1,6 +1,6 @@
 # Architecture
 
-> **TradingMapClaw (TMC) v1.6.1 | 2026-07-03**
+> **TradingMapClaw (TMC) v1.8 | 2026-07-04**
 > This document describes the system's design principles, data flow, component responsibilities, key decisions, and known limitations.
 
 ---
@@ -17,30 +17,32 @@ Every design decision is filtered through a hard monthly budget cap of **$55 USD
 - The local model (Qwen3 14B via Ollama) handles formatting, deduplication, and free voting — tasks that do not require frontier reasoning — to conserve API budget.
 - Actual measured spend runs around $7/month (13.5% of the cap); see the [README cost breakdown](README.md#monthly-cost).
 
-### 1.2 Dual-Engine, Multi-Model Council
+### 1.2 Three-Engine, Multi-Model Council
 
-The core analytical architecture is not one model, and not a simple maker-checker pair — it is a **Dual-Engine architecture running a Multi-Model Council**:
+The core analytical architecture is not one model, and not a simple maker-checker pair — it is a **Three-Engine architecture running a Multi-Model Council**:
 
-- **Dual-Engine** = two independent AI engines that cross-check each other:
-  - **Engine 1 — Hermes Agent** (Nous Research): orchestration plus fundamental, macro, and sentiment reasoning.
-  - **Engine 2 — Codex (GPT-5.5)**: independent technical/flow analysis, and — critically — cross-verification of Engine 1's numbers.
-- **Multi-Model Council** = the models the two engines convene across three analysis roles: **DeepSeek V4 Pro**, **GLM-5.2**, and **GPT-5.5** (plus local **Qwen3 14B** for free voting).
-- The council's role split is **Engine A / B / C**:
-  - **Engine A** (Hermes, GLM-5.2) — fundamentals, valuation, insider activity.
-  - **Engine B** (Codex, GPT-5.5) — technicals, capital flow, options, and mandatory cross-verification of Engine A's numbers.
-  - **Engine C** (Hermes, GLM-5.2) — macro, industry, sentiment, regulatory context.
+- **Three-Engine** = three independent AI engines that cross-check each other:
+  - **Engine A — Hermes Agent** (Nous Research, GLM-5.2): orchestration plus fundamental, valuation, and insider reasoning.
+  - **Engine B — Codex (GPT-5.5)**: independent technical/flow analysis, and — critically — mandatory cross-verification of Engine A's numbers.
+  - **Engine C — Hermes Agent** (Nous Research, GLM-5.2): macro, industry, sentiment, and regulatory reasoning.
+- **Multi-Model Council** = the models the three engines convene across their analysis roles: **DeepSeek V4 Pro**, **GLM-5.2**, and **GPT-5.5** (plus local **Qwen3 14B** for free voting).
+- The council's role split and weighting is **Engine A / B / C**:
+  - **Engine A** (Hermes, GLM-5.2) — fundamentals, valuation, insider activity (40%).
+  - **Engine B** (Codex, GPT-5.5) — technicals, capital flow, options, and mandatory cross-verification of Engine A's numbers (35%).
+  - **Engine C** (Hermes, GLM-5.2) — macro, industry, sentiment, regulatory context (25%).
+  - **Council War Room tiebreaker** (contested calls): DeepSeek → GLM-5.2 → GPT-5.5.
 
-One model can be confidently wrong. Two engines catch it. A council of three decides. This is the single most defensible feature in the system — see [Section 3](#3-dual-engine-multi-model-analysis-flow) for the full execution flow.
+One model can be confidently wrong. Two engines catch it. A council of three decides. This is the single most defensible feature in the system — see [Section 3](#3-three-engine-multi-model-analysis-flow) for the full execution flow.
 
 ### 1.3 Zero-Touch Automation
 
 The system is designed to operate without human intervention during market hours:
 
-- 115 cron jobs (106 enabled) handle data collection, analysis, report generation, and delivery.
+- 119 cron jobs (~110 enabled) handle data collection, analysis, report generation, and delivery.
 - Reports are pushed to Telegram and Feishu via `bilingual_send.py`, a drop-in wrapper around the FROZEN `send_reports.py`.
 - Quality gates validate data freshness and completeness before reports are generated.
 - Error stubs and wrapper diagnostics are blacklisted from push delivery — users never receive broken reports.
-- The system runs overnight: collecting data before US market open (Beijing time), running analysis, delivering reports to the user's phone before, during, and after the trading session.
+- The system runs around the clock: collecting data before US market open (Beijing time), running analysis, delivering reports to the user's phone before, during, and after the trading session.
 
 ---
 
@@ -51,8 +53,8 @@ The system is designed to operate without human intervention during market hours
 | Aspect | Detail |
 |--------|--------|
 | Input format | HTTP API responses (JSON/HTML), RSS feeds, YAML config files |
-| Collection & analysis scripts | 499 Python scripts total (all compile) across `~/.hermes/scripts/` and `~/.hermes/cron/scripts/` |
-| Scheduling | Hermes cron engine — 115 jobs, 106 enabled, 9 disabled |
+| Collection & analysis scripts | 502+ Python scripts total (all compile) across `~/.hermes/scripts/` and `~/.hermes/cron/scripts/` |
+| Scheduling | Hermes cron engine — 119 jobs, ~110 enabled, ~9 disabled |
 | Job mix | 29 LLM-driven jobs · 76 script-only jobs |
 | Proxy | All outbound traffic through `http://127.0.0.1:10808` |
 | Output format | YAML files (stocks.yaml, news.yaml, analyst.yaml, sentiment_cache.json, insider_trades.yaml, etc.) |
@@ -71,7 +73,7 @@ Data collection scripts fetch from 12+ sources (Yahoo Finance/yfinance, FMP, Fin
 
 The quality gate prevents "data gap shells" — reports that present missing data as if complete. If required fields are absent or stale, the gate halts downstream processing and the 4-level fallback chain (see §8) is invoked before anything is marked unavailable.
 
-### Layer 3: Dual-Engine, Multi-Model Council
+### Layer 3: Three-Engine, Multi-Model Council
 
 | Aspect | Detail |
 |--------|--------|
@@ -95,7 +97,7 @@ The quality gate prevents "data gap shells" — reports that present missing dat
 
 ---
 
-## 3. Dual-Engine, Multi-Model Analysis Flow
+## 3. Three-Engine, Multi-Model Analysis Flow
 
 ### 3.1 Why Multi-Engine?
 
@@ -185,7 +187,7 @@ For higher-stakes position decisions, a separate three-model voting protocol run
 
 | Component | Responsibility | Location |
 |-----------|---------------|----------|
-| Cron Scheduler | Time-based job execution, 115 jobs | `~/.hermes/cron/` |
+| Cron Scheduler | Time-based job execution, 119 jobs | `~/.hermes/cron/` |
 | Collection Scripts | Fetch and normalize data from 12+ sources | `~/.hermes/cron/scripts/` |
 | Quality Gate | Validate data freshness and completeness | Ports 8080/8888 |
 | Engine A (Hermes, GLM-5.2) | Fundamental analysis, valuation, insider | Hermes Agent runtime |
@@ -256,9 +258,9 @@ TMC stores all intermediate data as YAML files, not in a relational database:
 
 Trade-off: no query language, no concurrent write protection. Acceptable for a single-user system on a single machine.
 
-### 9.2 Why Dual-Engine + Council (Not a Single LLM)
+### 9.2 Why Three-Engine + Council (Not a Single LLM)
 
-A single LLM can produce plausible-sounding analysis with incorrect numbers. The dual-engine pattern forces independent verification: Engine A produces analysis, Engine B independently checks Engine A's numbers, confidence rises on verification pass, and divergence is flagged in the report on failure. This costs more API calls but prevents the most dangerous failure mode: confident wrongness. Layering a multi-model council (DeepSeek V4 Pro + GLM-5.2 + GPT-5.5) on top further reduces the risk that a single vendor's model quirks silently shape every report.
+A single LLM can produce plausible-sounding analysis with incorrect numbers. The three-engine pattern forces independent verification: Engine A produces analysis, Engine B independently checks Engine A's numbers, confidence rises on verification pass, and divergence is flagged in the report on failure. This costs more API calls but prevents the most dangerous failure mode: confident wrongness. Layering a multi-model council (DeepSeek V4 Pro + GLM-5.2 + GPT-5.5) on top further reduces the risk that a single vendor's model quirks silently shape every report.
 
 ### 9.3 Why a Model Fallback Chain (Not One Model)
 
@@ -269,7 +271,7 @@ The cascade GLM-5.2 → GPT-5.5 → DeepSeek V4 Pro → Qwen3 14B serves two pur
 
 ### 9.4 Why an Engineering Constitution
 
-The system has 499 Python scripts, many tightly coupled. Uncontrolled refactoring is an existential risk. The 10-rule constitution (derived from Karpathy's CLAUDE.md) enforces read-before-write, surgical changes, no new dependencies without justification, and verification before declaring a fix complete. This is a survival protocol, not a style guide.
+The system has 502+ Python scripts, many tightly coupled. Uncontrolled refactoring is an existential risk. The 10-rule constitution (derived from Karpathy's CLAUDE.md) enforces read-before-write, surgical changes, no new dependencies without justification, and verification before declaring a fix complete. This is a survival protocol, not a style guide.
 
 ### 9.5 Why WATCHLIST_ONLY
 
@@ -318,7 +320,7 @@ Source: Karpathy `CLAUDE.md` — distilled 2026-06-29. Priority: HIGHEST.
 | Single point of failure | One Mac mini. Hardware failure = total system outage. | Acceptable for a personal research tool. Backups are file-level. |
 | No concurrent write protection | YAML files are written by collection scripts without file locks. | Acceptable because the cron scheduler serializes jobs. |
 | LLM dependency | System depends on external LLM APIs. If all providers are down, only local Qwen3 14B remains operational. | Model fallback chain provides 3 levels of fallback. Local model handles formatting but cannot generate analysis. |
-| Budget constraint | $55/month cap limits the volume of LLM calls and data sources. | Budget watchdog enforces the cap nightly. System prioritizes critical reports when budget is low. |
+| Budget constraint | $55/month cap limits the volume of LLM calls and data sources. | Budget watchdog enforces the cap continuously. System prioritizes critical reports when budget is low. |
 | yfinance cold cache | First run after a code change can take 5–10 minutes to warm the 7-day TTL cache. | Acceptable — subsequent runs are warm. |
 
 ---
@@ -339,4 +341,4 @@ Full policy: [SECURITY.md](SECURITY.md) · Contribution rules: [CONTRIBUTING.md]
 
 ---
 
-*Architecture document v1.6.1 | 2026-07-03. All architectural descriptions verified against [README_v161_SOURCE.md](README_v161_SOURCE.md).*
+*Architecture document v1.8 | 2026-07-04. All architectural descriptions verified against [README_v161_SOURCE.md](README_v161_SOURCE.md).*

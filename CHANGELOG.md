@@ -1,10 +1,34 @@
 # Changelog
 
-> **TradingMapClaw (TMC) v1.6.1 | 2026-07-03**
+> **TradingMapClaw (TMC) v1.8 | 2026-07-04**
 
 All notable changes to TradingMapClaw (TMC) are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+
+---
+
+## [v1.8] — 2026-07-04 — Active
+
+### Three-Engine Council Formalized
+
+The council structure was formalized as a **three-engine architecture** (Engine A / B / C) with explicit weighting — Engine A (Hermes/GLM-5.2: fundamentals, valuation, insider — 40%), Engine B (Codex/GPT-5.5: technicals, capital flow, options, cross-verification — 35%), Engine C (Hermes/GLM-5.2: macro, industry, sentiment, regulatory — 25%) — backed by a **Council War Room** tiebreaker protocol (DeepSeek → GLM-5.2 → GPT-5.5) for contested calls, under the existing all-must-complete gate.
+
+### Two Joint Audit Rounds — 14 Bugs Fixed Total
+
+Two further joint Hermes+Codex audit rounds were run on top of the v1.6 audit, bringing the cumulative total to **14 bugs fixed**, including a critical `HERMES_HOME` undefined-variable bug that had been silently disabling Engine C's memory feature.
+
+### Scale and Budget
+
+- **502+ Python scripts** (all compile), up from 499.
+- **119 cron jobs** (~110 enabled), up from 115.
+- **93+ SKILL.md** files.
+- **82 tickers**, 12+ data sources.
+- Budget: ~$7/month actual spend vs $55/month hard cap (13.5% of cap).
+
+### Public Website and Payments
+
+Public website and skill packs published; payments moved to fiat-only (PayPal/Wise) and the crypto tip jar was removed.
 
 ---
 
@@ -70,7 +94,7 @@ After all v1.5 changes were complete, Codex (GPT-5.5) performed a full engineeri
 
 ### Multi-Engine Deep Analysis
 
-Introduced the 4-step Engine C → Engine A → Engine B → Synthesis flow with mandatory cross-verification, co-authorship, and an all-must-complete gate (see [ARCHITECTURE.md](ARCHITECTURE.md#3-dual-engine-multi-model-analysis-flow)). Deep analysis template rewritten Chinese → English (8 sections). Cost analysis added (~$7/mo actual against $55/mo cap). Competitive comparison matrix added.
+Introduced the 4-step Engine C → Engine A → Engine B → Synthesis flow with mandatory cross-verification, co-authorship, and an all-must-complete gate (see [ARCHITECTURE.md](ARCHITECTURE.md#3-three-engine-multi-model-analysis-flow)). Deep analysis template rewritten Chinese → English (8 sections). Cost analysis added (~$7/mo actual against $55/mo cap). Competitive comparison matrix added.
 
 ### Frozen Modules Verification (Post-Fix)
 
@@ -259,10 +283,11 @@ Superseded by v1.1 due to critical cron scheduler incident (`L13_LogCleanup` mis
 | v13 | 2026-07-02 | SUPERSEDED | Bilingual report delivery: 30 prompts English, DeepSeek translation, 33 scripts swapped. |
 | v1.5 | 2026-07-03 | SUPERSEDED | T26 pipeline fixed (9 bugs), T11 expanded, 8-dimension scoring, 6 scripts Chinese→English. |
 | v1.6 | 2026-07-03 | SUPERSEDED | Codex audit: 5 post-refactoring bugs found & fixed. Multi-engine deep analysis (4-step flow, cross-verification, co-authorship, all-must-complete gate). Cost analysis (~$7/mo actual). Competitive comparison matrix. |
-| **v1.6.1** | **2026-07-03** | **Active** | **Budget tracker fixed (reads real Codex CLI logs + quality_scores.csv). T26 race condition fixed (data pipeline 21:00→20:30). Multi-engine timeout fixed (MAX_TICKERS 4→2). Monday readiness audit: 7/7 PASS. Website + author story added.** |
+| v1.6.1 | 2026-07-03 | SUPERSEDED | Budget tracker fixed (reads real Codex CLI logs + quality_scores.csv). T26 race condition fixed (data pipeline 21:00→20:30). Multi-engine timeout fixed (MAX_TICKERS 4→2). Monday readiness audit: 7/7 PASS. Website + author story added. |
+| **v1.8** | **2026-07-04** | **Active** | **Three-engine council formalized (A 40%/B 35%/C 25%) with Council War Room tiebreaker. Two further joint audit rounds — 14 bugs fixed total. 502+ scripts, 119 cron jobs (~110 enabled), 93+ SKILL.md, 82 tickers. Budget ~$7/mo vs $55/mo cap. Public website + skill packs + fiat-only payments; crypto tip jar removed.** |
 
-Total fixes across v1.0 → v1.6.1: **60+ items** across nine repair/enhancement cycles.
+Total fixes across v1.0 → v1.8: **74+ items** across ten repair/enhancement cycles.
 
 ---
 
-*Changelog v1.6.1 | 2026-07-03. A Chinese version is available in [CHANGELOG_CN.md](CHANGELOG_CN.md).*
+*Changelog v1.8 | 2026-07-04. A Chinese version is available in [CHANGELOG_CN.md](CHANGELOG_CN.md).*
