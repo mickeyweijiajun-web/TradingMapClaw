@@ -257,7 +257,7 @@ Full-system audit completed. 7 dimensions, 232 scripts, 115 cron jobs, 65k LOC.
 - Engineering Constitution (10 rules, Karpathy-derived)
 - Full data collection pipeline: 12+ sources, 226 collection scripts
 - 13 report types: T1/T2/T3/T11/T15/T16/T17/T18/T19/T25/T26/R1-R3/Visual
-- Dual-engine AI council: Hermes GLM-5.2 (fundamentals) + Codex GPT-5.5 (technicals)
+- Three-engine AI council: Engine A Hermes/GLM-5.2 (fundamentals) + Engine B Codex/GPT-5.5 (technicals, cross-verify) + Engine C Hermes/GLM-5.2 (macro, sentiment)
 - Model fallback chain: GLM-5.2 → GPT-5.5 → DeepSeek V4 Pro → Qwen3 14B (local)
 - Telegram + Feishu delivery: 30+ wrapper scripts
 - Budget watchdog: $55/month hard cap
