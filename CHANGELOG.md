@@ -1,6 +1,6 @@
 # Changelog
 
-> **TradingMapClaw (TMC) v1.8 | 2026-07-04**
+> **TradingMapClaw (TMC) v2.0 | 2026-07-12**
 
 All notable changes to TradingMapClaw (TMC) are documented in this file.
 
@@ -8,21 +8,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
-## [v1.8] — 2026-07-04 — Active
+## [v2.0] — 2026-07-12 — Active
 
-### Three-Engine Council Formalized
+### Dual-Pass Council Formalized
 
-The council structure was formalized as a **three-engine architecture** (Engine A / B / C) with explicit weighting — Engine A (Hermes/GLM-5.2: fundamentals, valuation, insider — 40%), Engine B (Codex/GPT-5.5: technicals, capital flow, options, cross-verification — 35%), Engine C (Hermes/GLM-5.2: macro, industry, sentiment, regulatory — 25%) — backed by a **Council War Room** tiebreaker protocol (DeepSeek → GLM-5.2 → GPT-5.5) for contested calls, under the existing all-must-complete gate.
+The council structure was formalized as a **dual-engine architecture** (Pass A / B / C) with explicit weighting — Pass A (Hermes/GLM-5.2: fundamentals, valuation, insider — 40%), Pass B (Codex/GPT-5.6: technicals, capital flow, options, cross-verification — 35%), Pass C (Hermes/GLM-5.2: macro, industry, sentiment, regulatory — 25%) — backed by a **Council War Room** tiebreaker protocol (DeepSeek → GLM-5.2 → GPT-5.6) for contested calls, under the existing all-must-complete gate.
 
 ### Two Joint Audit Rounds — 14 Bugs Fixed Total
 
-Two further joint Hermes+Codex audit rounds were run on top of the v1.6 audit, bringing the cumulative total to **14 bugs fixed**, including a critical `HERMES_HOME` undefined-variable bug that had been silently disabling Engine C's memory feature.
+Two further joint Hermes+Codex audit rounds were run on top of the v1.6 audit, bringing the cumulative total to **14 bugs fixed**, including a critical `HERMES_HOME` undefined-variable bug that had been silently disabling Pass C's memory feature.
 
 ### Scale and Budget
 
-- **502+ Python scripts** (all compile), up from 499.
-- **119 cron jobs** (~110 enabled), up from 115.
-- **93+ SKILL.md** files.
+- **230+ Python scripts** (all compile), up from 499.
+- **118 cron jobs** (~110 enabled), up from 115.
+- **50+ SKILL.md** files.
 - **82 tickers**, 12+ data sources.
 - Budget: ~$7/month actual spend vs $55/month hard cap (13.5% of cap).
 
@@ -82,11 +82,11 @@ A joint Hermes+Codex audit covering 7 operational risk points, run ahead of the 
 
 ### Codex Audit: 5 Post-Refactoring Bugs Found & Fixed
 
-After all v1.5 changes were complete, Codex (GPT-5.5) performed a full engineering quality audit: read all 19 modified Python files completely, ran `py_compile` on all 19 (all PASS), ran `importlib.import_module()` on key files (all OK), verified cross-file dependencies, checked file sync between `scripts/` and `cron/scripts/` copies, and verified frozen modules were untouched.
+After all v1.5 changes were complete, Codex (GPT-5.6) performed a full engineering quality audit: read all 19 modified Python files completely, ran `py_compile` on all 19 (all PASS), ran `importlib.import_module()` on key files (all OK), verified cross-file dependencies, checked file sync between `scripts/` and `cron/scripts/` copies, and verified frozen modules were untouched.
 
 | # | Severity | File | Bug | Fix | Verification |
 |---|----------|------|-----|-----|-------------|
-| 1 | CRITICAL | `codex_analyst_wrapper.py` L766 | `HERMES_HOME` undefined → Engine C macro/sentiment data never loaded (silently caught by except, no crash but feature dead) | Changed to `SCRIPTS_ROOT` (already defined at L39) | ✅ `_load_engine_c_memory('AVGO')` now returns real data |
+| 1 | CRITICAL | `codex_analyst_wrapper.py` L766 | `HERMES_HOME` undefined → Pass C macro/sentiment data never loaded (silently caught by except, no crash but feature dead) | Changed to `SCRIPTS_ROOT` (already defined at L39) | ✅ `_load_engine_c_memory('AVGO')` now returns real data |
 | 2 | HIGH | `scripts/collect_market_data.py` L29 | `from pathlib import Path` missing in `scripts/` copy (`cron/scripts/` copy was fixed) | Added import | ✅ `py_compile` pass |
 | 3 | MODERATE | `codex_options.py` L116,121,135-139 | Chinese strings in output headers ("策略分析") and review prompt | Converted to English | ✅ 0 non-comment Chinese in output lines |
 | 4 | LOW | `scripts/codex_position_risk_wrapper.py` | `scripts/` copy still had 39 Chinese lines (`cron/scripts/` copy was English) | Synced: `cp cron/scripts/ → scripts/` | ✅ MD5 match |
@@ -94,7 +94,7 @@ After all v1.5 changes were complete, Codex (GPT-5.5) performed a full engineeri
 
 ### Multi-Engine Deep Analysis
 
-Introduced the 4-step Engine C → Engine A → Engine B → Synthesis flow with mandatory cross-verification, co-authorship, and an all-must-complete gate (see [ARCHITECTURE.md](ARCHITECTURE.md#3-three-engine-multi-model-analysis-flow)). Deep analysis template rewritten Chinese → English (8 sections). Cost analysis added (~$7/mo actual against $55/mo cap). Competitive comparison matrix added.
+Introduced the 4-step Pass C → Pass A → Pass B → Synthesis flow with mandatory cross-verification, co-authorship, and an all-must-complete gate (see [ARCHITECTURE.md](ARCHITECTURE.md#3-dual-engine-multi-model-analysis-flow)). Deep analysis template rewritten Chinese → English (8 sections). Cost analysis added (~$7/mo actual against $55/mo cap). Competitive comparison matrix added.
 
 ### Frozen Modules Verification (Post-Fix)
 
@@ -126,7 +126,7 @@ Introduced the 4-step Engine C → Engine A → Engine B → Synthesis flow with
 
 ### Feature Enhancements (15 items)
 
-Supply chain graph expanded 43 → 49 suppliers; T26 now scans all 8 sectors (was top 3), eliminating a 62.5% blind spot; crawl depth increased 2 → 3; T11 alpha_score threshold lowered 0.3 → 0.15; T11 yfinance enrichment extended to all tickers (was 20 cap); market cap cache added (7-day TTL); alpha scoring expanded 5 → 8 dimensions; T26 report reads structured `sc_alpha` scores instead of fabricating; T26 prompts converted to plain language; T11 cron reduced to once daily; multi-engine flow introduced into `codex_analyst_wrapper` (single call → 4-step, all-must-complete gate); cross-verification logic added (Engine B verifies A, +0.1 confidence on pass); 6 no_agent scripts converted Chinese → English.
+Supply chain graph expanded 43 → 49 suppliers; T26 now scans all 8 sectors (was top 3), eliminating a 62.5% blind spot; crawl depth increased 2 → 3; T11 alpha_score threshold lowered 0.3 → 0.15; T11 yfinance enrichment extended to all tickers (was 20 cap); market cap cache added (7-day TTL); alpha scoring expanded 5 → 8 dimensions; T26 report reads structured `sc_alpha` scores instead of fabricating; T26 prompts converted to plain language; T11 cron reduced to once daily; multi-engine flow introduced into `codex_analyst_wrapper` (single call → 4-step, all-must-complete gate); cross-verification logic added (Pass B verifies A, +0.1 confidence on pass); 6 no_agent scripts converted Chinese → English.
 
 ### Prompt Conciseness (5 items)
 
@@ -257,8 +257,8 @@ Full-system audit completed. 7 dimensions, 232 scripts, 115 cron jobs, 65k LOC.
 - Engineering Constitution (10 rules, Karpathy-derived)
 - Full data collection pipeline: 12+ sources, 226 collection scripts
 - 13 report types: T1/T2/T3/T11/T15/T16/T17/T18/T19/T25/T26/R1-R3/Visual
-- Three-engine AI council: Engine A Hermes/GLM-5.2 (fundamentals) + Engine B Codex/GPT-5.5 (technicals, cross-verify) + Engine C Hermes/GLM-5.2 (macro, sentiment)
-- Model fallback chain: GLM-5.2 → GPT-5.5 → DeepSeek V4 Pro → Qwen3 14B (local)
+- Dual-engine AI council: Pass A Hermes/GLM-5.2 (fundamentals) + Pass B Codex/GPT-5.6 (technicals, cross-verify) + Pass C Hermes/GLM-5.2 (macro, sentiment)
+- Model fallback chain: GLM-5.2 → GPT-5.6 → DeepSeek V4 Pro → Qwen3 14B (local)
 - Telegram + Feishu delivery: 30+ wrapper scripts
 - Budget watchdog: $55/month hard cap
 - Coverage: 82 tickers across 5 groups
@@ -284,10 +284,10 @@ Superseded by v1.1 due to critical cron scheduler incident (`L13_LogCleanup` mis
 | v1.5 | 2026-07-03 | SUPERSEDED | T26 pipeline fixed (9 bugs), T11 expanded, 8-dimension scoring, 6 scripts Chinese→English. |
 | v1.6 | 2026-07-03 | SUPERSEDED | Codex audit: 5 post-refactoring bugs found & fixed. Multi-engine deep analysis (4-step flow, cross-verification, co-authorship, all-must-complete gate). Cost analysis (~$7/mo actual). Competitive comparison matrix. |
 | v1.6.1 | 2026-07-03 | SUPERSEDED | Budget tracker fixed (reads real Codex CLI logs + quality_scores.csv). T26 race condition fixed (data pipeline 21:00→20:30). Multi-engine timeout fixed (MAX_TICKERS 4→2). Monday readiness audit: 7/7 PASS. Website + author story added. |
-| **v1.8** | **2026-07-04** | **Active** | **Three-engine council formalized (A 40%/B 35%/C 25%) with Council War Room tiebreaker. Two further joint audit rounds — 14 bugs fixed total. 502+ scripts, 119 cron jobs (~110 enabled), 93+ SKILL.md, 82 tickers. Budget ~$7/mo vs $55/mo cap. Public website + skill packs + fiat-only payments; crypto tip jar removed.** |
+| **v2.0** | **2026-07-12** | **Active** | **Dual-engine architecture formalized (Pass A 40% / Pass B 35% / Pass C 25%) with Council War Room tiebreaker. Two further joint audit rounds — 14 bugs fixed total. 230+ scripts, 118 cron jobs (117 enabled), 50+ SKILL.md, 82 tickers. Budget ~$7/mo vs $55/mo cap. Public website + skill packs + fiat-only payments; crypto tip jar removed.** |
 
-Total fixes across v1.0 → v1.8: **74+ items** across ten repair/enhancement cycles.
+Total fixes across v1.0 → v2.0: **74+ items** across ten repair/enhancement cycles.
 
 ---
 
-*Changelog v1.8 | 2026-07-04. A Chinese version is available in [CHANGELOG_CN.md](CHANGELOG_CN.md).*
+*Changelog v2.0 | 2026-07-12. A Chinese version is available in [CHANGELOG_CN.md](CHANGELOG_CN.md).*

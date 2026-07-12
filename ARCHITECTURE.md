@@ -1,6 +1,6 @@
 # Architecture
 
-> **TradingMapClaw (TMC) v1.8 | 2026-07-04**
+> **TradingMapClaw (TMC) v2.0 | 2026-07-12**
 > This document describes the system's design principles, data flow, component responsibilities, key decisions, and known limitations.
 
 ---
@@ -13,32 +13,32 @@ Every design decision is filtered through a hard monthly budget cap of **$55 USD
 
 - No cloud infrastructure — the system runs on a single Mac mini (Apple Silicon, macOS 26.5.1).
 - No premium data feeds (Bloomberg, Refinitiv). Data comes from 12+ free or low-cost sources.
-- LLM costs are monitored by a custom budget watchdog. The model fallback chain (GLM-5.2 → GPT-5.5 → DeepSeek V4 Pro → Qwen3 14B local) cascades from cheapest-and-first-tried to most-expensive-last-resort.
+- LLM costs are monitored by a custom budget watchdog. The model fallback chain (GLM-5.2 → GPT-5.6 → DeepSeek V4 Pro → Qwen3 14B local) cascades from cheapest-and-first-tried to most-expensive-last-resort.
 - The local model (Qwen3 14B via Ollama) handles formatting, deduplication, and free voting — tasks that do not require frontier reasoning — to conserve API budget.
 - Actual measured spend runs around $7/month (13.5% of the cap); see the [README cost breakdown](README.md#monthly-cost).
 
-### 1.2 Three-Engine, Multi-Model Council
+### 1.2 Dual-Engine, Multi-Model Council
 
-The core analytical architecture is not one model, and not a simple maker-checker pair — it is a **Three-Engine architecture running a Multi-Model Council**:
+The core analytical architecture is not one model, and not a simple maker-checker pair — it is a **Dual-Engine architecture running a Multi-Model Council**:
 
-- **Three-Engine** = three independent AI engines that cross-check each other:
-  - **Engine A — Hermes Agent** (Nous Research, GLM-5.2): orchestration plus fundamental, valuation, and insider reasoning.
-  - **Engine B — Codex (GPT-5.5)**: independent technical/flow analysis, and — critically — mandatory cross-verification of Engine A's numbers.
-  - **Engine C — Hermes Agent** (Nous Research, GLM-5.2): macro, industry, sentiment, and regulatory reasoning.
-- **Multi-Model Council** = the models the three engines convene across their analysis roles: **DeepSeek V4 Pro**, **GLM-5.2**, and **GPT-5.5** (plus local **Qwen3 14B** for free voting).
-- The council's role split and weighting is **Engine A / B / C**:
-  - **Engine A** (Hermes, GLM-5.2) — fundamentals, valuation, insider activity (40%).
-  - **Engine B** (Codex, GPT-5.5) — technicals, capital flow, options, and mandatory cross-verification of Engine A's numbers (35%).
-  - **Engine C** (Hermes, GLM-5.2) — macro, industry, sentiment, regulatory context (25%).
-  - **Council War Room tiebreaker** (contested calls): DeepSeek → GLM-5.2 → GPT-5.5.
+- **Dual-Engine** = two independent AI engines — **Engine 1: Hermes Agent** (orchestrator) and **Engine 2: Codex** (independent checker) — that cross-check each other across three analysis passes:
+  - **Pass A — Engine 1 / Hermes Agent** (Nous Research, GLM-5.2): orchestration plus fundamental, valuation, and insider reasoning.
+  - **Pass B — Engine 2 / Codex (GPT-5.6)**: independent technical/flow analysis, and — critically — mandatory cross-verification of Pass A's numbers.
+  - **Pass C — Engine 1 / Hermes Agent** (Nous Research, GLM-5.2): macro, industry, sentiment, and regulatory reasoning.
+- **Multi-Model Council** = the models the two engines convene across the three analysis passes: **DeepSeek V4 Pro**, **GLM-5.2**, and **GPT-5.6** (plus local **Qwen3 14B** for free voting).
+- The council's role split and weighting is **Pass A / B / C**:
+  - **Pass A** (Hermes, GLM-5.2) — fundamentals, valuation, insider activity (40%).
+  - **Pass B** (Codex, GPT-5.6) — technicals, capital flow, options, and mandatory cross-verification of Pass A's numbers (35%).
+  - **Pass C** (Hermes, GLM-5.2) — macro, industry, sentiment, regulatory context (25%).
+  - **Council War Room tiebreaker** (contested calls): DeepSeek → GLM-5.2 → GPT-5.6.
 
-One model can be confidently wrong. Two engines catch it. A council of three decides. This is the single most defensible feature in the system — see [Section 3](#3-three-engine-multi-model-analysis-flow) for the full execution flow.
+One model can be confidently wrong. A second engine catches it. A multi-model council decides. This is the single most defensible feature in the system — see [Section 3](#3-dual-engine-multi-model-analysis-flow) for the full execution flow.
 
 ### 1.3 Zero-Touch Automation
 
 The system is designed to operate without human intervention during market hours:
 
-- 119 cron jobs (~110 enabled) handle data collection, analysis, report generation, and delivery.
+- 118 cron jobs (117 enabled) handle data collection, analysis, report generation, and delivery.
 - Reports are pushed to Telegram and Feishu via `bilingual_send.py`, a drop-in wrapper around the FROZEN `send_reports.py`.
 - Quality gates validate data freshness and completeness before reports are generated.
 - Error stubs and wrapper diagnostics are blacklisted from push delivery — users never receive broken reports.
@@ -53,8 +53,8 @@ The system is designed to operate without human intervention during market hours
 | Aspect | Detail |
 |--------|--------|
 | Input format | HTTP API responses (JSON/HTML), RSS feeds, YAML config files |
-| Collection & analysis scripts | 502+ Python scripts total (all compile) across `~/.hermes/scripts/` and `~/.hermes/cron/scripts/` |
-| Scheduling | Hermes cron engine — 119 jobs, ~110 enabled, ~9 disabled |
+| Collection & analysis scripts | 230+ Python scripts total (all compile) across `~/.hermes/scripts/` and `~/.hermes/cron/scripts/` |
+| Scheduling | Hermes cron engine — 118 jobs, ~110 enabled, ~9 disabled |
 | Job mix | 29 LLM-driven jobs · 76 script-only jobs |
 | Proxy | All outbound traffic through `http://127.0.0.1:10808` |
 | Output format | YAML files (stocks.yaml, news.yaml, analyst.yaml, sentiment_cache.json, insider_trades.yaml, etc.) |
@@ -73,15 +73,15 @@ Data collection scripts fetch from 12+ sources (Yahoo Finance/yfinance, FMP, Fin
 
 The quality gate prevents "data gap shells" — reports that present missing data as if complete. If required fields are absent or stale, the gate halts downstream processing and the 4-level fallback chain (see §8) is invoked before anything is marked unavailable.
 
-### Layer 3: Three-Engine, Multi-Model Council
+### Layer 3: Dual-Engine, Multi-Model Council
 
 | Aspect | Detail |
 |--------|--------|
 | Input | Validated data from Layer 2 |
-| Engine A | Hermes, GLM-5.2 — fundamentals, valuation, insider (weight 40%) |
-| Engine B | Codex, GPT-5.5 — technicals, capital flow, options, cross-verification of A (weight 35%) |
-| Engine C | Hermes, GLM-5.2 — macro, industry, sentiment, regulatory (weight 25%) |
-| Model fallback chain | GLM-5.2 → GPT-5.5 → DeepSeek V4 Pro → Qwen3 14B (local, free) |
+| Pass A | Hermes, GLM-5.2 — fundamentals, valuation, insider (weight 40%) |
+| Pass B | Codex, GPT-5.6 — technicals, capital flow, options, cross-verification of A (weight 35%) |
+| Pass C | Hermes, GLM-5.2 — macro, industry, sentiment, regulatory (weight 25%) |
+| Model fallback chain | GLM-5.2 → GPT-5.6 → DeepSeek V4 Pro → Qwen3 14B (local, free) |
 | Output | Structured analysis with consensus, divergence, and confidence annotations |
 
 ### Layer 4: Report Generation & Bilingual Delivery (Output)
@@ -97,54 +97,54 @@ The quality gate prevents "data gap shells" — reports that present missing dat
 
 ---
 
-## 3. Three-Engine, Multi-Model Analysis Flow
+## 3. Dual-Engine, Multi-Model Analysis Flow
 
 ### 3.1 Why Multi-Engine?
 
-A single LLM can produce a plausible-sounding analysis with wrong numbers. TMC splits analysis across three independent engines, each responsible for a specific domain, and forces Engine B to cross-verify Engine A's numbers before the final report is co-authored.
+A single LLM can produce a plausible-sounding analysis with wrong numbers. TMC splits analysis across three independent engines, each responsible for a specific domain, and forces Pass B to cross-verify Pass A's numbers before the final report is co-authored.
 
-### 3.2 Engine Assignment
+### 3.2 Pass Assignment
 
 | Engine | Model | Domain | Weight | Output |
 |--------|-------|--------|--------|--------|
-| **Engine A** | Hermes, GLM-5.2 | Fundamentals + valuation + insider | 40% | Score 1-10, key metrics, DCF range, valuation verdict |
-| **Engine B** | Codex, GPT-5.5 | Technicals + capital flow + options | 35% | Score 1-10, entry/stop levels, cross-verify verdict |
-| **Engine C** | Hermes, GLM-5.2 | Macro + industry + sentiment + regulatory | 25% | Macro bias, industry rank, sentiment percentile, regulatory risk |
+| **Pass A** | Hermes, GLM-5.2 | Fundamentals + valuation + insider | 40% | Score 1-10, key metrics, DCF range, valuation verdict |
+| **Pass B** | Codex, GPT-5.6 | Technicals + capital flow + options | 35% | Score 1-10, entry/stop levels, cross-verify verdict |
+| **Pass C** | Hermes, GLM-5.2 | Macro + industry + sentiment + regulatory | 25% | Macro bias, industry rank, sentiment percentile, regulatory risk |
 
 ### 3.3 Execution Flow (All Must Complete)
 
 ```
-Step 1: Engine C Pre-Load
+Step 1: Pass C Pre-Load
   → Read macro/sentiment memory from previous runs
   → If no memory: fall back to sentiment_cache.json + macro.yaml
   → Output: macro context string
 
-Step 2: Engine A (Fundamentals)
-  → Receives Engine C context + all market data
+Step 2: Pass A (Fundamentals)
+  → Receives Pass C context + all market data
   → Analyzes: revenue growth, margins, ROE/ROIC, PE/Forward PE/PEG, DCF, debt, insider
   → Output: fundamentals score + metrics + valuation range
   → If fails: ABORT (no partial report)
 
-Step 3: Engine B (Technicals + Cross-Verification)
-  → Receives Engine A's output
-  → MUST verify Engine A's key numbers (PE, revenue growth, target price, 52w high/low)
+Step 3: Pass B (Technicals + Cross-Verification)
+  → Receives Pass A's output
+  → MUST verify Pass A's key numbers (PE, revenue growth, target price, 52w high/low)
   → If any number off by >5%: [CROSS-VERIFY] status: FAIL
   → Analyzes: RSI, MACD, BB, EMA, volume, institutional holdings, analyst targets, short interest, options P/C
   → Output: technicals score + entry/stop + cross-verify verdict
   → If fails: ABORT (no partial report)
 
 Step 4: Cross-Verification Check
-  → Parse Engine B's [CROSS-VERIFY] status
+  → Parse Pass B's [CROSS-VERIFY] status
   → If PASS: confidence +0.1 (capped at 1.0)
   → If FAIL: flag discrepancies for divergence section
 
 Step 5: Synthesis (Co-Authored)
-  → Receives: Engine A output + Engine B output + Engine C data + cross-verify result
+  → Receives: Pass A output + Pass B output + Pass C data + cross-verify result
   → Co-authors unified 8-section report (not three reports stitched together)
   → Identifies consensus (what all agree on) and divergence (where they disagree, ≤3 points)
-  → Outputs: BUY/HOLD/SELL + weighted score + 3-scenario target table + position advice
+  → Outputs: scenario label (bullish / neutral / bearish) + weighted score + 3-scenario target table + position advice
 
-Step 6: Engine C Memory Write-Back
+Step 6: Pass C Memory Write-Back
   → Extract macro/sentiment sections from final report
   → Write to memory (namespace=engine_c) for future runs
 ```
@@ -154,32 +154,32 @@ Step 6: Engine C Memory Write-Back
 | Section | Engine | Limit | Content |
 |---------|--------|-------|---------|
 | 1. Core Conclusion | Co-authored | ≤80 words | Verdict + rating + target range |
-| 2. Fundamentals | Engine A | ≤220 words | Revenue/margins/ROE/valuation/DCF/balance sheet/insider → score 1-10 |
-| 3. Technicals + Flow | Engine B | ≤220 words | Trend/support/resistance/RSI/MACD/BB/volume/institutional/analyst/short/options → score 1-10 + entry/stop |
-| 4. Macro + Industry | Engine C | ≤120 words | Rate sensitivity, FX impact, industry growth, competition |
-| 5. Sentiment | Engine C | ≤120 words | News sentiment, bull/bear split, analyst trend, retail vs institutional |
-| 6. Regulatory | Engine C | ≤80 words | Pending regulatory matters or "no material risk" |
+| 2. Fundamentals | Pass A | ≤220 words | Revenue/margins/ROE/valuation/DCF/balance sheet/insider → score 1-10 |
+| 3. Technicals + Flow | Pass B | ≤220 words | Trend/support/resistance/RSI/MACD/BB/volume/institutional/analyst/short/options → score 1-10 + entry/stop |
+| 4. Macro + Industry | Pass C | ≤120 words | Rate sensitivity, FX impact, industry growth, competition |
+| 5. Sentiment | Pass C | ≤120 words | News sentiment, bull/bear split, analyst trend, retail vs institutional |
+| 6. Regulatory | Pass C | ≤80 words | Pending regulatory matters or "no material risk" |
 | 7. Consensus & Divergence | All | ≤150 words | What all agree on + where they disagree (≤3 points, each with adopted engine + reason) |
 | 8. Final Verdict | Co-authored | — | Rating (★1-5) + weighted score + 3-scenario probability table + position advice + catalyst |
 
 ### 3.5 Hard Constraints
 
 1. **All engines must complete** — no partial reports. Any engine failure → abort.
-2. **Cross-verification mandatory** — Engine B must verify Engine A's numbers.
+2. **Cross-verification mandatory** — Pass B must verify Pass A's numbers.
 3. **Co-authorship** — final report is one unified article, not three reports stitched together.
 4. **Consensus + divergence** — both must appear in Section 7.
-5. **Rating required** — no "no recommendation" allowed. Must output BUY/HOLD/SELL + target range.
+5. **Rating required** — no "no recommendation" allowed. Must output scenario label (bullish / neutral / bearish) + target range.
 6. **Plain language** — no jargon without explanation, e.g. "PEG (price/earnings-to-growth, lower = cheaper) 0.83."
 7. **English only** — all prompts and outputs in English. Feishu gets Chinese translation via DeepSeek.
 
 ### 3.6 Interactive vs Cron
 
-- **Interactive** (user requests a deep dive on a ticker): uses the `deep-analysis-dual-head` skill. Engine B is dispatched via `delegate_task`; Engine A/C run through Hermes directly. All outputs are collected before the unified report.
-- **Cron** (`codex_analyst_wrapper.py`): 4-step sequential flow — Engine C pre-load → Engine A (Codex CLI) → Engine B (Codex CLI, cross-verify) → Synthesis (Codex CLI). All-must-complete gate.
+- **Interactive** (user requests a deep dive on a ticker): uses the `deep-analysis-dual-head` skill. Pass B is dispatched via `delegate_task`; Pass A/C run through Hermes directly. All outputs are collected before the unified report.
+- **Cron** (`codex_analyst_wrapper.py`): 4-step sequential flow — Pass C pre-load → Pass A (Codex CLI) → Pass B (Codex CLI, cross-verify) → Synthesis (Codex CLI). All-must-complete gate.
 
 ### 3.7 Council War Room (Contested Calls)
 
-For higher-stakes position decisions, a separate three-model voting protocol runs: **Round 1** (DeepSeek drafts) → **Round 2** (GLM-5.2 reviews) → **Round 3** (GPT-5.5 tiebreaker, only if Rounds 1-2 disagree). Output: final BUY/HOLD/SELL + confidence/100.
+For higher-stakes position decisions, a separate three-model voting protocol runs: **Round 1** (DeepSeek drafts) → **Round 2** (GLM-5.2 reviews) → **Round 3** (GPT-5.6 tiebreaker, only if Rounds 1-2 disagree). Output: final scenario label (bullish / neutral / bearish) + confidence/100.
 
 ---
 
@@ -187,12 +187,12 @@ For higher-stakes position decisions, a separate three-model voting protocol run
 
 | Component | Responsibility | Location |
 |-----------|---------------|----------|
-| Cron Scheduler | Time-based job execution, 119 jobs | `~/.hermes/cron/` |
+| Cron Scheduler | Time-based job execution, 118 jobs | `~/.hermes/cron/` |
 | Collection Scripts | Fetch and normalize data from 12+ sources | `~/.hermes/cron/scripts/` |
 | Quality Gate | Validate data freshness and completeness | Ports 8080/8888 |
-| Engine A (Hermes, GLM-5.2) | Fundamental analysis, valuation, insider | Hermes Agent runtime |
-| Engine B (Codex, GPT-5.5) | Technical analysis, capital flow, cross-verification | Codex runtime |
-| Engine C (Hermes, GLM-5.2) | Macro, industry, sentiment, regulatory | Hermes Agent runtime |
+| Pass A (Hermes, GLM-5.2) | Fundamental analysis, valuation, insider | Hermes Agent runtime |
+| Pass B (Codex, GPT-5.6) | Technical analysis, capital flow, cross-verification | Codex runtime |
+| Pass C (Hermes, GLM-5.2) | Macro, industry, sentiment, regulatory | Hermes Agent runtime |
 | Synthesis / Council Layer | Merge engine outputs, flag divergences, annotate confidence | Hermes Agent runtime |
 | Report Wrappers | Format and deliver reports to Telegram/Feishu | `~/.hermes/cron/scripts/` |
 | Budget Watchdog | Monitor monthly API spend, enforce $55 cap | `budget_status.json` |
@@ -258,20 +258,20 @@ TMC stores all intermediate data as YAML files, not in a relational database:
 
 Trade-off: no query language, no concurrent write protection. Acceptable for a single-user system on a single machine.
 
-### 9.2 Why Three-Engine + Council (Not a Single LLM)
+### 9.2 Why Dual-Engine + Council (Not a Single LLM)
 
-A single LLM can produce plausible-sounding analysis with incorrect numbers. The three-engine pattern forces independent verification: Engine A produces analysis, Engine B independently checks Engine A's numbers, confidence rises on verification pass, and divergence is flagged in the report on failure. This costs more API calls but prevents the most dangerous failure mode: confident wrongness. Layering a multi-model council (DeepSeek V4 Pro + GLM-5.2 + GPT-5.5) on top further reduces the risk that a single vendor's model quirks silently shape every report.
+A single LLM can produce plausible-sounding analysis with incorrect numbers. The dual-engine pattern forces independent verification: Pass A produces analysis, Pass B independently checks Pass A's numbers, confidence rises on verification pass, and divergence is flagged in the report on failure. This costs more API calls but prevents the most dangerous failure mode: confident wrongness. Layering a multi-model council (DeepSeek V4 Pro + GLM-5.2 + GPT-5.6) on top further reduces the risk that a single vendor's model quirks silently shape every report.
 
 ### 9.3 Why a Model Fallback Chain (Not One Model)
 
-The cascade GLM-5.2 → GPT-5.5 → DeepSeek V4 Pro → Qwen3 14B serves two purposes:
+The cascade GLM-5.2 → GPT-5.6 → DeepSeek V4 Pro → Qwen3 14B serves two purposes:
 - **Cost control:** cheaper models are tried first; fallbacks only activate on failure.
 - **Resilience:** if one provider has an outage, the system continues operating.
 - **Local fallback:** Qwen3 14B runs on-device via Ollama. Even if all API providers are down, formatting and deduplication still work.
 
 ### 9.4 Why an Engineering Constitution
 
-The system has 502+ Python scripts, many tightly coupled. Uncontrolled refactoring is an existential risk. The 10-rule constitution (derived from Karpathy's CLAUDE.md) enforces read-before-write, surgical changes, no new dependencies without justification, and verification before declaring a fix complete. This is a survival protocol, not a style guide.
+The system has 230+ Python scripts, many tightly coupled. Uncontrolled refactoring is an existential risk. The 10-rule constitution (derived from Karpathy's CLAUDE.md) enforces read-before-write, surgical changes, no new dependencies without justification, and verification before declaring a fix complete. This is a survival protocol, not a style guide.
 
 ### 9.5 Why WATCHLIST_ONLY
 
@@ -341,4 +341,4 @@ Full policy: [SECURITY.md](SECURITY.md) · Contribution rules: [CONTRIBUTING.md]
 
 ---
 
-*Architecture document v1.8 | 2026-07-04. All architectural descriptions verified against [README_v161_SOURCE.md](README_v161_SOURCE.md).*
+*Architecture document v2.0 | 2026-07-12. All architectural descriptions verified against [README_v161_SOURCE.md](README_v161_SOURCE.md).*

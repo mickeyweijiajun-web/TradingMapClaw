@@ -1,12 +1,12 @@
 # Contributing to TradingMapClaw
 
-> **v1.8 | 2026-07-04**
+> **v2.0 | 2026-07-12**
 
 ## System Status: Active Development, Tightly Controlled
 
-TradingMapClaw (TMC) is at **v1.8** (2026-07-04) and in daily operation and active maintenance. This is not a green-field project accepting arbitrary feature requests — it is a solo-maintained, 502+-script production system, and changes are deliberately constrained.
+TradingMapClaw (TMC) is at **v2.0** (2026-07-12) and in daily operation and active maintenance. This is not a green-field project accepting arbitrary feature requests — it is a solo-maintained, 230+-script production system, and changes are deliberately constrained.
 
-The system has 502+ Python scripts, many tightly coupled. Uncontrolled changes pose an existential risk to system stability. The v1.1 incident — where a single missing `id` field crashed all 115 cron jobs for 3 days — and the v1.6 Codex audit — which found a `HERMES_HOME` undefined-variable bug that had silently disabled Engine C's memory — both demonstrate why this discipline matters. See [CHANGELOG.md](CHANGELOG.md) for the full incident and fix history.
+The system has 230+ Python scripts, many tightly coupled. Uncontrolled changes pose an existential risk to system stability. The v1.1 incident — where a single missing `id` field crashed all 115 cron jobs for 3 days — and the v1.6 Codex audit — which found a `HERMES_HOME` undefined-variable bug that had silently disabled Pass C's memory — both demonstrate why this discipline matters. See [CHANGELOG.md](CHANGELOG.md) for the full incident and fix history.
 
 ---
 
@@ -54,7 +54,7 @@ Note: the system's monthly budget cap is **$55 USD**. Suggestions for paid data 
 
 ## What Is NOT Accepted
 
-- **Speculative feature requests** — new report types, new analysis modules, and new delivery channels require a clear justification tied to a real gap, not "it would be nice." The bar is high because every new surface adds to a 502+-script maintenance load carried by one person.
+- **Speculative feature requests** — new report types, new analysis modules, and new delivery channels require a clear justification tied to a real gap, not "it would be nice." The bar is high because every new surface adds to a 230+-script maintenance load carried by one person.
 - **Code refactoring PRs** — see Engineering Constitution rule #4 (Surgical Changes). Uncontrolled refactoring is classified as a "Runaway Refactor" failure mode.
 - **New dependencies** — see Engineering Constitution rule #8. Any new dependency must be justified against standard library / existing libraries. PRs adding `requirements.txt` entries without justification will be rejected.
 - **Changes to frozen modules** — `send_reports.py`, `runtime_guard`, `scheduler`, and the `stocks.yaml` schema cannot be modified. See [ARCHITECTURE.md](ARCHITECTURE.md#10-frozen-modules--engineering-constitution).
@@ -119,4 +119,4 @@ Patience is appreciated. Quality is prioritized over speed.
 
 ---
 
-*Contributing guide v1.8 | 2026-07-04. A Chinese version is available in [CONTRIBUTING_CN.md](CONTRIBUTING_CN.md).*
+*Contributing guide v2.0 | 2026-07-12. A Chinese version is available in [CONTRIBUTING_CN.md](CONTRIBUTING_CN.md).*

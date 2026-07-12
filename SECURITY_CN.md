@@ -1,6 +1,6 @@
 # 安全说明
 
-> **TradingMapClaw（TMC）v1.8 | 2026-07-04**
+> **TradingMapClaw（TMC）v2.0 | 2026-07-12**
 
 ## 安全边界
 
@@ -11,7 +11,7 @@ TradingMapClaw（TMC）在严格且刻意受限的安全边界内运行。系统
 TMC 是研究工具。不执行交易。
 
 - 系统中任何位置都不存储券商 API 凭证。
-- **502+ 个** Python 脚本中没有任何交易执行能力。
+- **230+ 个** Python 脚本中没有任何交易执行能力。
 - 系统不能下单、改单或撤单。
 - 这是架构约束，不是配置选项——没有"交易模式"可以开启。
 
@@ -37,12 +37,12 @@ TMC 是研究工具。不执行交易。
 
 ## 安全实践
 
-### 三引擎交叉审计
+### 双引擎交叉审计
 
 - 全部脚本经 Hermes+Codex 交叉审计扫描。
-- **502+/502+ 脚本通过 `py_compile` 语法检查。**
-- 两轮 Hermes+Codex 联合审计共发现并修复 **14 个 bug**——其中包括导致 Engine C 记忆功能失效的严重 `HERMES_HOME` 未定义变量 bug。完整清单见 [CHANGELOG_CN.md](CHANGELOG_CN.md)。
-- 在 v1.8 封版前，Hermes+Codex 联合的**周一就绪审计**覆盖 7 个运营风险点，全部 7/7 通过（PASS 或 FIXED）。
+- **230+/230+ 脚本通过 `py_compile` 语法检查。**
+- 两轮 Hermes+Codex 联合审计共发现并修复 **14 个 bug**——其中包括导致 Pass C 记忆功能失效的严重 `HERMES_HOME` 未定义变量 bug。完整清单见 [CHANGELOG_CN.md](CHANGELOG_CN.md)。
+- 在 v2.0 封版前，Hermes+Codex 联合的**周一就绪审计**覆盖 7 个运营风险点，全部 7/7 通过（PASS 或 FIXED）。
 
 ### 凭证隔离
 
@@ -100,4 +100,4 @@ TMC 是研究工具。不执行交易。
 
 ---
 
-*安全说明 v1.8 | 2026-07-04 生成。英文版本见 [SECURITY.md](SECURITY.md)。*
+*安全说明 v2.0 | 2026-07-12 生成。英文版本见 [SECURITY.md](SECURITY.md)。*

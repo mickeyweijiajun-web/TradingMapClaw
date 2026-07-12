@@ -2,11 +2,11 @@
 
 ### The story behind TradingMapClaw and the man who built it.
 
-> **v1.8 | 2026-07-04**
+> **v2.0 | 2026-07-12**
 
 ---
 
-A man who lost 95% of his right arm's function before he was twenty. A man whose colon was removed and whose abdomen now carries a permanent opening. A man who worked inside Wells Fargo, Deutsche Bank, UBS, JPMorgan, and eToro — typing with one hand. A man who, in 2026, built an automated investment research system — 502+ Python scripts, 119 scheduled jobs, a three-engine architecture running a multi-model council — by himself, on a single Mac mini, in two months. His name is Mickey Wei. This is not a story about overcoming adversity. It is a story about a man who refused to accept the dimensions of the room he was given.
+A man who lost 95% of his right arm's function before he was twenty. A man whose colon was removed and whose abdomen now carries a permanent opening. A man who worked inside Wells Fargo, Deutsche Bank, UBS, JPMorgan, and eToro — typing with one hand. A man who, in 2026, built an automated investment research system — 230+ Python scripts, 118 scheduled jobs, a dual-engine architecture running a multi-model council — by himself, on a single Mac mini, in two months. His name is Mickey Wei. This is not a story about overcoming adversity. It is a story about a man who refused to accept the dimensions of the room he was given.
 
 ---
 
@@ -74,21 +74,21 @@ He did not disappear.
 
 In May 2026, Mickey began building. He had no prior coding background. He used AI as his engineering partner — not as a crutch, but as a collaborator that could type at the speed of his thoughts, since his left hand alone could not keep up with what he wanted to build.
 
-In two months, he built TradingMapClaw (TMC), now at v1.8:
+In two months, he built TradingMapClaw (TMC), now at v2.0:
 
-- 119 scheduled jobs running automatically, including data collection before US market open
-- 502+ Python scripts — all passing compilation
+- 118 scheduled jobs running automatically, including data collection before US market open
+- 230+ Python scripts — all passing compilation
 - Coverage of 82 tickers across 5 groups
 - 12+ data sources
 - 13 report types, from intraday snapshots to supply chain chokepoint analysis
-- A **Three-Engine architecture** — Engine A (Hermes/GLM-5.2: fundamentals, valuation, insider), Engine B (Codex/GPT-5.5: independent technicals, capital flow, and mandatory cross-verification), and Engine C (Hermes/GLM-5.2: macro, industry, sentiment, regulatory) — running a **Multi-Model Council** of DeepSeek V4 Pro, GLM-5.2, and GPT-5.5, with a Council War Room tiebreaker for contested calls and mandatory cross-verification before any report is co-authored
+- A **Dual-Engine architecture** — Pass A (Hermes/GLM-5.2: fundamentals, valuation, insider), Pass B (Codex/GPT-5.6: independent technicals, capital flow, and mandatory cross-verification), and Pass C (Hermes/GLM-5.2: macro, industry, sentiment, regulatory) — running a **Multi-Model Council** of DeepSeek V4 Pro, GLM-5.2, and GPT-5.6, with a Council War Room tiebreaker for contested calls and mandatory cross-verification before any report is co-authored
 - A monthly budget cap of $55 USD, with actual measured spend around $7/month
-- Hermes+Codex cross-audit across all 502+ scripts, plus two joint audit rounds that found and fixed 14 bugs total
+- Hermes+Codex cross-audit across all 230+ scripts, plus two joint audit rounds that found and fixed 14 bugs total
 - Reports delivered to Telegram and Feishu — zero missed deliveries
 
-The system ran into a catastrophic failure during its first month: a single missing `id` field in a cron job configuration crashed the entire scheduler. 115 jobs stopped for three days. He diagnosed it, fixed it, and kept fixing: patched dozens of issues across repair cycles from v1.1 through v1.8, brought all scripts to clean compilation, and — most recently — ran two further joint Hermes+Codex audit rounds that brought the cumulative fix count to 14 bugs. The incident and repair log is published in full in [CHANGELOG.md](CHANGELOG.md) — not as a confession, but as evidence of competence.
+The system ran into a catastrophic failure during its first month: a single missing `id` field in a cron job configuration crashed the entire scheduler. 115 jobs stopped for three days. He diagnosed it, fixed it, and kept fixing: patched dozens of issues across repair cycles from v1.1 through v2.0, brought all scripts to clean compilation, and — most recently — ran two further joint Hermes+Codex audit rounds that brought the cumulative fix count to 14 bugs. The incident and repair log is published in full in [CHANGELOG.md](CHANGELOG.md) — not as a confession, but as evidence of competence.
 
-One model can be confidently wrong. Two engines catch it. A council of three decides. That principle — cross-verify before you trust a number — did not come from a textbook. It came from years spent in maker-checker roles in banking, where the same rule applied to money instead of code.
+One model can be confidently wrong. A second engine catches it. A multi-model council decides. That principle — cross-verify before you trust a number — did not come from a textbook. It came from years spent in maker-checker roles in banking, where the same rule applied to money instead of code.
 
 TradingMapClaw is not a hobby project. It is an answer. To the job market that closed its doors. To the hospital bed that took his colon. To every standard he was measured against and found lacking because of a hand that does not work and a bag that does not come off. He did not ask anyone to lower the standard. He walked around the door and built his own building.
 
@@ -126,7 +126,7 @@ If you are living with a brachial plexus injury, with an ostomy, with both — y
 
 ## Closing
 
-Mickey Wei built TradingMapClaw with one working hand and a body that has been surgically rebuilt eight times. He did not build it to prove a point. He built it because the world he was given did not have a place for him, so he made one. The system runs before US market open while he sleeps. It collects data, runs a three-engine, multi-model analysis, and delivers reports to his phone. It does not know or care that it was built by a man with one hand and a stoma bag.
+Mickey Wei built TradingMapClaw with one working hand and a body that has been surgically rebuilt eight times. He did not build it to prove a point. He built it because the world he was given did not have a place for him, so he made one. The system runs before US market open while he sleeps. It collects data, runs a dual-engine, multi-model analysis, and delivers reports to his phone. It does not know or care that it was built by a man with one hand and a stoma bag.
 
 That is the point. The system works. The man who built it works. And the distance between what he was told he could be and what he actually became is the only measurement that matters.
 
@@ -136,4 +136,4 @@ He did not overcome anything. He refused to be overcome.
 
 *Read the full technical picture in [README.md](README.md) and [ARCHITECTURE.md](ARCHITECTURE.md). A Chinese version of this story is available in [STORY_CN.md](STORY_CN.md).*
 
-*Story v1.8 | 2026-07-04.*
+*Story v2.0 | 2026-07-12.*

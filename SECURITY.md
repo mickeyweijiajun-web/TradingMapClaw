@@ -1,6 +1,6 @@
 # Security Policy
 
-> **TradingMapClaw (TMC) v1.8 | 2026-07-04**
+> **TradingMapClaw (TMC) v2.0 | 2026-07-12**
 
 ## Security Boundary
 
@@ -11,7 +11,7 @@ TradingMapClaw (TMC) operates within a strict, deliberately constrained security
 TMC is a research tool. It does not execute trades.
 
 - No broker API credentials are stored anywhere in the system.
-- None of the **502+ Python scripts** have trade-execution capability.
+- None of the **230+ Python scripts** have trade-execution capability.
 - The system cannot place, modify, or cancel orders.
 - This is an architectural constraint, not a config option — there is no "trading mode" to enable.
 
@@ -37,12 +37,12 @@ TMC is a research tool. It does not execute trades.
 
 ## Security Practices
 
-### Three-Engine Cross-Audit
+### Dual-Pass Cross-Audit
 
 - All scripts scanned by Hermes+Codex cross-audit.
-- **502+/502+ scripts pass `py_compile`.**
-- Two joint Hermes+Codex audit rounds found and fixed **14 bugs total** — including a critical `HERMES_HOME` undefined-variable bug that disabled Engine C memory. See [CHANGELOG.md](CHANGELOG.md) for the full list.
-- A joint Hermes+Codex **Monday readiness audit** covering 7 operational risk points passed 7/7 (PASS or FIXED) ahead of the v1.8 seal.
+- **230+/230+ scripts pass `py_compile`.**
+- Two joint Hermes+Codex audit rounds found and fixed **14 bugs total** — including a critical `HERMES_HOME` undefined-variable bug that disabled Pass C memory. See [CHANGELOG.md](CHANGELOG.md) for the full list.
+- A joint Hermes+Codex **Monday readiness audit** covering 7 operational risk points passed 7/7 (PASS or FIXED) ahead of the v2.0 seal.
 
 ### Credential Isolation
 
@@ -89,4 +89,4 @@ The maintainer (Mickey Wei) has a physical disability (right-arm brachial plexus
 
 ---
 
-*Security policy v1.8 | 2026-07-04. A Chinese version is available in [SECURITY_CN.md](SECURITY_CN.md).*
+*Security policy v2.0 | 2026-07-12. A Chinese version is available in [SECURITY_CN.md](SECURITY_CN.md).*
