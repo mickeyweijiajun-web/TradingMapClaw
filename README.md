@@ -13,7 +13,7 @@
 [![Status](https://img.shields.io/badge/status-v2.0%20Active-2a6b73)](CHANGELOG.md)
 [![Scripts](https://img.shields.io/badge/scripts-230%2B%20compile-5ba8b0)](ARCHITECTURE.md)
 [![Cron](https://img.shields.io/badge/cron%20jobs-118-5ba8b0)](ARCHITECTURE.md)
-[![Engines](https://img.shields.io/badge/engines-3-5ba8b0)](ARCHITECTURE.md)
+[![Engines](https://img.shields.io/badge/engines-dual%2Bcouncil-5ba8b0)](ARCHITECTURE.md)
 [![Skills](https://img.shields.io/badge/SKILL.md-50%2B-5ba8b0)](ARCHITECTURE.md)
 [![Coverage](https://img.shields.io/badge/tickers-82-5ba8b0)](#coverage)
 [![Delivery](https://img.shields.io/badge/delivery-bilingual%20EN%2FZH-5ba8b0)](CHANGELOG.md)
