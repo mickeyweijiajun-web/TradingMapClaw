@@ -38,7 +38,7 @@ One model can be confidently wrong. A second engine catches it. A multi-model co
 
 The system is designed to operate without human intervention during market hours:
 
-- 118 cron jobs (117 enabled) handle data collection, analysis, report generation, and delivery.
+- 100+ scheduled workflows handle data collection, analysis, report generation, and delivery. Exact current totals await the reproducible Mac snapshot because the latest audit records conflict.
 - Reports are pushed to Telegram and Feishu via `bilingual_send.py`, a drop-in wrapper around the FROZEN `send_reports.py`.
 - Quality gates validate data freshness and completeness before reports are generated.
 - Error stubs and wrapper diagnostics are blacklisted from push delivery — users never receive broken reports.
@@ -53,8 +53,8 @@ The system is designed to operate without human intervention during market hours
 | Aspect | Detail |
 |--------|--------|
 | Input format | HTTP API responses (JSON/HTML), RSS feeds, YAML config files |
-| Collection & analysis scripts | 230+ Python scripts total (all compile) across `~/.hermes/scripts/` and `~/.hermes/cron/scripts/` |
-| Scheduling | Hermes cron engine — 118 jobs, ~110 enabled, ~9 disabled |
+| Collection & analysis scripts | Hundreds of Python scripts across `~/.hermes/scripts/` and `~/.hermes/cron/scripts/`; operator reports 415+, pending snapshot verification |
+| Scheduling | Hermes scheduler — 100+ workflows; exact total/enabled/error counts pending snapshot reconciliation |
 | Job mix | 29 LLM-driven jobs · 76 script-only jobs |
 | Proxy | All outbound traffic through `http://127.0.0.1:10808` |
 | Output format | YAML files (stocks.yaml, news.yaml, analyst.yaml, sentiment_cache.json, insider_trades.yaml, etc.) |
@@ -187,7 +187,7 @@ For higher-stakes position decisions, a separate three-model voting protocol run
 
 | Component | Responsibility | Location |
 |-----------|---------------|----------|
-| Cron Scheduler | Time-based job execution, 118 jobs | `~/.hermes/cron/` |
+| Scheduler | Time-based execution, 100+ workflows | `~/.hermes/cron/` |
 | Collection Scripts | Fetch and normalize data from 12+ sources | `~/.hermes/cron/scripts/` |
 | Quality Gate | Validate data freshness and completeness | Ports 8080/8888 |
 | Pass A (Hermes, GLM-5.2) | Fundamental analysis, valuation, insider | Hermes Agent runtime |
@@ -271,7 +271,7 @@ The cascade GLM-5.2 → GPT-5.6 → DeepSeek V4 Pro → Qwen3 14B serves two pur
 
 ### 9.4 Why an Engineering Constitution
 
-The system has 230+ Python scripts, many tightly coupled. Uncontrolled refactoring is an existential risk. The 10-rule constitution (derived from Karpathy's CLAUDE.md) enforces read-before-write, surgical changes, no new dependencies without justification, and verification before declaring a fix complete. This is a survival protocol, not a style guide.
+The system has hundreds of Python scripts, many tightly coupled. Uncontrolled refactoring is an existential risk. The 10-rule constitution (derived from Karpathy's CLAUDE.md) enforces read-before-write, surgical changes, no new dependencies without justification, and verification before declaring a fix complete. This is a survival protocol, not a style guide.
 
 ### 9.5 Why WATCHLIST_ONLY
 

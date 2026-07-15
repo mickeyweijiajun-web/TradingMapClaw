@@ -11,8 +11,8 @@
 > This project is not a demo of what AI can do. It is proof of what a person can do when they refuse to accept the dimensions of the room they were given. **Not pity. Visibility.** — [full story](STORY.md) · [my 2019 essay on disability & employment](https://www.linkedin.com/in/mickey-wei-5b95aa95/recent-activity/articles/)
 
 [![Status](https://img.shields.io/badge/status-v2.0%20Active-2a6b73)](CHANGELOG.md)
-[![Scripts](https://img.shields.io/badge/scripts-230%2B%20compile-5ba8b0)](ARCHITECTURE.md)
-[![Cron](https://img.shields.io/badge/cron%20jobs-118-5ba8b0)](ARCHITECTURE.md)
+[![Scripts](https://img.shields.io/badge/scripts-hundreds-5ba8b0)](ARCHITECTURE.md)
+[![Cron](https://img.shields.io/badge/scheduled%20workflows-100%2B-5ba8b0)](ARCHITECTURE.md)
 [![Engines](https://img.shields.io/badge/engines-dual%2Bcouncil-5ba8b0)](ARCHITECTURE.md)
 [![Skills](https://img.shields.io/badge/SKILL.md-50%2B-5ba8b0)](ARCHITECTURE.md)
 [![Coverage](https://img.shields.io/badge/tickers-82-5ba8b0)](#coverage)
@@ -44,8 +44,8 @@ Full mechanics in [ARCHITECTURE.md](ARCHITECTURE.md).
 
 | Metric | Value |
 |--------|-------|
-| Python scripts | **230+** (all compile) |
-| Cron jobs | **118** (117 enabled) |
+| Python scripts | **Hundreds** (operator reports 415+; exact count pending reproducible Mac snapshot) |
+| Scheduled workflows | **100+** (Hermes audit's 118/121 totals conflict; exact count pending snapshot) |
 | AI engines | **2** (Hermes Agent + Codex) |
 | Council models | **3** (DeepSeek V4 Pro · GLM-5.2 · GPT-5.6) |
 | SKILL.md skill files | **50+** |
@@ -70,8 +70,8 @@ Full mechanics in [ARCHITECTURE.md](ARCHITECTURE.md).
                     └────────────────┬────────────────────────┘
                                      │ proxy:127.0.0.1:10808
                     ┌────────────────▼────────────────────────┐
-                    │      Cron Scheduler (118 jobs)          │
-                    │   230+ Python scripts (all compile ✓)   │
+                    │   Scheduler (100+ workflows)            │
+                    │   Hundreds of Python scripts            │
                     │   LLM-driven + script-only mix          │
                     └────────────────┬────────────────────────┘
                                      │
@@ -144,7 +144,7 @@ The council is **not a vote first, ask questions later** — it is structured cr
 | **Actual total** | **~$7.43** | 13.5% of the $55 budget cap |
 | **Budget cap** | **$55** | Hard ceiling, continuously enforced |
 
-Why it stays cheap: the majority of the 118 jobs are script-only (zero LLM cost), DeepSeek V4 Pro handles the majority of LLM calls at ~$0.0003/1K tokens, and local Qwen3 14B is free. See [README full cost breakdown](README_v161_SOURCE.md) methodology and [ARCHITECTURE.md](ARCHITECTURE.md) for the fallback chain.
+Why it stays cheap: the majority of scheduled workflows are script-only (zero LLM cost), lower-cost routing handles routine LLM calls, and local Qwen3 14B is free. See [README full cost breakdown](README_v161_SOURCE.md) methodology and [ARCHITECTURE.md](ARCHITECTURE.md) for the fallback chain.
 
 ---
 
@@ -156,7 +156,7 @@ Every AI-assisted change is bound by 10 rules (derived from Karpathy's `CLAUDE.m
 5. Verification · 6. Goal-driven · 7. Debug, don't guess · 8. No new dependencies without justification ·
 9. Communicate uncertainty · 10. Watch failure modes.
 
-This is a survival protocol for a solo-developed, 230+-script system, not a style guide. See [CONTRIBUTING.md](CONTRIBUTING.md).
+This is a survival protocol for a solo-developed system with hundreds of scripts, not a style guide. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
@@ -213,9 +213,9 @@ I built a career anyway — back-office operations at **Wells Fargo, Deutsche Ba
 
 Then came a second, unrelated collapse: ulcerative colitis, an autoimmune disease that attacked my colon. Eight surgeries over eight years. What began as a temporary ileostomy became, after complications, a **permanent ostomy** I manage every day. Two conditions, one body, both mostly invisible unless I choose to talk about them.
 
-In May 2026, with zero prior coding background, I started building anyway. AI became my engineering partner — not a crutch, but a collaborator that could type at the speed of my thoughts, because my left hand alone couldn't keep up with what I wanted to build. Two months later: TradingMapClaw. 230+ Python scripts. 118 scheduled jobs. A dual-engine, multi-model council that catches its own errors before they reach a report. It runs around the clock while I sleep, and it does not know or care that it was built by a man with one working hand and a stoma bag.
+In May 2026, with zero prior coding background, I started building anyway. AI became my engineering partner — not a crutch, but a collaborator that could type at the speed of my thoughts, because my left hand alone couldn't keep up with what I wanted to build. Two months later: TradingMapClaw. Hundreds of Python scripts. 100+ scheduled workflows. A dual-engine, multi-model council that catches errors before they reach a report. It runs around the clock while I sleep, and it does not know or care that it was built by a man with one working hand and a stoma bag.
 
-**Ability first, background second.** The story is why you might stop reading for a second. The 230+ scripts, the 118 cron jobs, and the cross-verification protocol are why you should keep going. → **Read the full story in [STORY.md](STORY.md)**, including the medical history in detail, the career walls that closed and the ones that opened anyway, and what "not pity, visibility" actually asks of you.
+**Ability first, background second.** The story is why you might stop reading for a second. The engineering scale, scheduled workflow fleet, and cross-verification protocol are why you should keep going. → **Read the full story in [STORY.md](STORY.md)**, including the medical history in detail, the career walls that closed and the ones that opened anyway, and what "not pity, visibility" actually asks of you.
 
 If you're living with a brachial plexus injury, ulcerative colitis, IBD, Crohn's, or a permanent ostomy: you are not invisible.
 
