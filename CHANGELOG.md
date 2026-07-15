@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-07-15 — Third-round audit tooling
+
+- Added a redacted Mac snapshot audit covering the real Hermes, cron, skills, shared-context and website paths.
+- Added static checks for stale model references, Council round assignments/conditional tiebreaker, browser temp-file cleanup and task-queue state.
+- Separated public-repository findings from Mac-only claims that still require on-device evidence.
+- Documented the new website publication architecture: deterministic system updates may auto-merge after CI; research evidence remains review-gated.
+
 > **TradingMapClaw (TMC) v2.0 | 2026-07-12**
 
 All notable changes to TradingMapClaw (TMC) are documented in this file.
@@ -20,8 +27,8 @@ Two further joint Hermes+Codex audit rounds were run on top of the v1.6 audit, b
 
 ### Scale and Budget
 
-- **230+ Python scripts** (all compile), up from 499.
-- **118 cron jobs** (~110 enabled), up from 115.
+- Public wording is temporarily **hundreds of Python scripts** and **100+ scheduled workflows**.
+- The operator reports 415+ scripts; the Hermes audit contains conflicting 118/121 task totals. Exact current counts remain unverified until `tools/mac_snapshot_audit.py --compile` produces a reproducible inventory.
 - **50+ SKILL.md** files.
 - **82 tickers**, 12+ data sources.
 - Budget: ~$7/month actual spend vs $55/month hard cap (13.5% of cap).
@@ -284,7 +291,7 @@ Superseded by v1.1 due to critical cron scheduler incident (`L13_LogCleanup` mis
 | v1.5 | 2026-07-03 | SUPERSEDED | T26 pipeline fixed (9 bugs), T11 expanded, 8-dimension scoring, 6 scripts Chinese→English. |
 | v1.6 | 2026-07-03 | SUPERSEDED | Codex audit: 5 post-refactoring bugs found & fixed. Multi-engine deep analysis (4-step flow, cross-verification, co-authorship, all-must-complete gate). Cost analysis (~$7/mo actual). Competitive comparison matrix. |
 | v1.6.1 | 2026-07-03 | SUPERSEDED | Budget tracker fixed (reads real Codex CLI logs + quality_scores.csv). T26 race condition fixed (data pipeline 21:00→20:30). Multi-engine timeout fixed (MAX_TICKERS 4→2). Monday readiness audit: 7/7 PASS. Website + author story added. |
-| **v2.0** | **2026-07-12** | **Active** | **Dual-engine architecture formalized (Pass A 40% / Pass B 35% / Pass C 25%) with Council War Room tiebreaker. Two further joint audit rounds — 14 bugs fixed total. 230+ scripts, 118 cron jobs (117 enabled), 50+ SKILL.md, 82 tickers. Budget ~$7/mo vs $55/mo cap. Public website + skill packs + fiat-only payments; crypto tip jar removed.** |
+| **v2.0** | **2026-07-12** | **Active** | **Dual-engine architecture formalized (Pass A 40% / Pass B 35% / Pass C 25%) with Council War Room tiebreaker. Two further joint audit rounds — 14 bugs fixed total. Current public scale wording is hundreds of scripts / 100+ scheduled workflows pending Mac snapshot reconciliation; 50+ SKILL.md, 82 tickers. Budget ~$7/mo vs $55/mo cap.** |
 
 Total fixes across v1.0 → v2.0: **74+ items** across ten repair/enhancement cycles.
 
